@@ -35,14 +35,17 @@ add_executable(${PROJECT_NAME} main.c
         headers/GameCycle.h
         headers/GraphWindow.c
         headers/GraphWindow.h
-        headers/GUI/Button.c
-        headers/GUI/Button.h
-        headers/GUI/DropDownBox.c
-        headers/GUI/DropDownBox.h
+        headers/GUI/Primitives/Button.c
+        headers/GUI/Primitives/Button.h
+        headers/GUI/Primitives/DropDownBox.c
+        headers/GUI/Primitives/DropDownBox.h
         headers/SafeMemoryAllocator.c
         headers/SafeMemoryAllocator.h
-        headers/GUI/Spinner.c
-        headers/GUI/Spinner.h)
+        headers/GUI/Primitives/Spinner.c
+        headers/GUI/Primitives/Spinner.h
+        headers/GUI/ToolBar.c
+        headers/GUI/ToolBar.h
+        headers/GUI/Primitives/Primitive.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

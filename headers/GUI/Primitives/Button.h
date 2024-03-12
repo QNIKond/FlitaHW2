@@ -9,4 +9,4 @@ typedef struct BUTTON
 
 Button* CreateButton(Button button);
 
-void UpdateDrawButton(Button* button);
+void UpdateDrawButton(Button* btn);

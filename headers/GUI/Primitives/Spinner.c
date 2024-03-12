@@ -1,6 +1,6 @@
 #include "Spinner.h"
-#include "../SafeMemoryAllocator.h"
-#include "../../raygui.h"
+#include "../../SafeMemoryAllocator.h"
+#include "../../../raygui.h"
 
 Spinner *CreateSpinner(Spinner dropDownBox)
 {
