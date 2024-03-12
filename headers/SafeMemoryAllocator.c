@@ -25,7 +25,7 @@ void *SCalloc(size_t num,size_t size)
 
 void FreeAll()
 {
-    for(int i = 0; i < allocCount; ++i)
+    for(int i = allocCount-1; i >=0; --i)
         free(allocations[i]);
     free(allocations);
 }

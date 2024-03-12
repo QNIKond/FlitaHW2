@@ -7,11 +7,10 @@ typedef struct DROPDOWNBOX
     const char* text;
     int size;
     void(**OnAction)();
+
+    char isInEditMode;
 } DropDownBox;
 
-//DropDownBox *CreateDropDownBox(Rectangle position,const char* text, int size, void(*actions)());
 DropDownBox *CreateDropDownBox(DropDownBox dropDownBox);
 
-void UpdateDrawDropDownBox();
-
-void FreeDropDownBox(DropDownBox* dropDownBox);
+void UpdateDrawDropDownBox(DropDownBox* drb);

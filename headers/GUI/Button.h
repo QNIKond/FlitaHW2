@@ -10,5 +10,3 @@ typedef struct BUTTON
 Button* CreateButton(Button button);
 
 void UpdateDrawButton(Button* button);
-
-void FreeButton(Button* button);
