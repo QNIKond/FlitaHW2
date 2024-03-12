@@ -40,7 +40,9 @@ add_executable(${PROJECT_NAME} main.c
         headers/GUI/DropDownBox.c
         headers/GUI/DropDownBox.h
         headers/SafeMemoryAllocator.c
-        headers/SafeMemoryAllocator.h)
+        headers/SafeMemoryAllocator.h
+        headers/GUI/Spinner.c
+        headers/GUI/Spinner.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 
