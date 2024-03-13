@@ -45,7 +45,9 @@ add_executable(${PROJECT_NAME} main.c
         headers/GUI/Primitives/Spinner.h
         headers/GUI/ToolBar.c
         headers/GUI/ToolBar.h
-        headers/GUI/Primitives/Primitive.h)
+        headers/GUI/Primitives/Layout.h
+        headers/GUI/InfoWindow.c
+        headers/GUI/InfoWindow.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

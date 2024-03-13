@@ -1,5 +1,5 @@
 #pragma once
 
-void AssembleToolBar();
+void InitializeToolBar();
 
 void UpdateDrawToolBar();
