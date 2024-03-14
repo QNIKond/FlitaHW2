@@ -20,9 +20,9 @@ int main()
     GuiSetStyle(0,2,0x000000ff);
     GuiSetStyle(0, 16, 0x00000012);
     Font fnt = LoadFont_Robotofont();
-    //Font fnt = LoadFont("Fonts/Roboto-Regular.ttf");
+    //Font fnt = LoadFontEx("Fonts/Roboto-Regular.ttf",18,0,0);
     GuiSetFont(fnt);
-    ExportFontAsCode(fnt,"robotofont.h");
+    //ExportFontAsCode(fnt,"../robotofont.h");
     InitializeToolBar();
     InitializeInfoWindow();
 
