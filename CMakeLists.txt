@@ -33,8 +33,8 @@ endif()
 add_executable(${PROJECT_NAME} main.c
         headers/GameCycle.c
         headers/GameCycle.h
-        headers/GraphWindow.c
-        headers/GraphWindow.h
+        headers/GUI/GraphWindow.c
+        headers/GUI/GraphWindow.h
         headers/GUI/Primitives/Button.c
         headers/GUI/Primitives/Button.h
         headers/GUI/Primitives/DropDownBox.c
@@ -47,7 +47,11 @@ add_executable(${PROJECT_NAME} main.c
         headers/GUI/ToolBar.h
         headers/GUI/Primitives/Layout.h
         headers/GUI/InfoWindow.c
-        headers/GUI/InfoWindow.h)
+        headers/GUI/InfoWindow.h
+        headers/Simulation/Graph.c
+        headers/Simulation/Graph.h
+        headers/ArenaAllocator.c
+        headers/ArenaAllocator.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

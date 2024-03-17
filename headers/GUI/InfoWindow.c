@@ -28,16 +28,18 @@ void UpdateDrawHelpPanel(Rectangle rect)
     DrawText("Press Alt+F4 to exit.",rect.x+10,rect.y+10,20,BLACK);
 }
 
-void UpdateDrawIWStatePanel()
+void UpdateDrawIWStatePanel(int *focus)
 {
     Rectangle rect = {GetScreenWidth()-IWWIDTH,TBHEIGHT,IWWIDTH/4,TBHEIGHT};
     DrawRectangle(GetScreenWidth()-IWWIDTH,TBHEIGHT,IWWIDTH,TBHEIGHT,DARKGREEN);
-    GuiToggleGroup(rect,">;Info;Settings;Help",(int*)&IWState);
-
+    int state = IWState;
+    GuiToggleGroup(rect,">;Info;Settings;Help",&state);
+    if(*focus)
+        IWState = state;
 }
 
-void UpdateDrawInfoWindow(){
-    UpdateDrawIWStatePanel();
+void UpdateDrawInfoWindow(int *focus){
+    UpdateDrawIWStatePanel(focus);
     Rectangle rect = {GetScreenWidth()-IWWIDTH,TBHEIGHT*2,IWWIDTH,GetScreenHeight()-TBHEIGHT*2};
     if(IWState!=IWMinimized)
         DrawRectangleRec(rect,WHITE);

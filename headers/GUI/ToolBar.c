@@ -1,60 +1,60 @@
 #include "ToolBar.h"
-#include "Primitives/Button.h"
-#include "Primitives/DropDownBox.h"
 #include "../../raygui.h"
+#include "GraphWindow.h"
 #include "Primitives/Layout.h"
 #define WIDTHOFDROPDOWN 100
+#define WIDTHOFEDIT 150
 #define WIDTHOFBUTTON 50
 #define DIVIDERWIDTH 30
 
-Button *buttons[4];
-DropDownBox *dropDowns[3];
+GraphEditMode *graphEditRef;
 
-int t = 18;
-
-void tplus()
-{
-    t+=1;
-    GuiSetStyle(0, 16, t);
-}
-void tminus()
-{
-    t-=1;
-    GuiSetStyle(0, 16, t);
-}
-
-void teq()
-{
-    GuiSetStyle(0, 16, 18);
-}
+struct Menu{
+    const char* text;
+    int selected;
+    int lastState;
+    int isActive;
+    int isSwitchable;
+}fileMenu,viewMenu,editMenu;
 
 void InitializeToolBar()
 {
-    int head = 0;
-    dropDowns[0] = CreateDropDownBox((DropDownBox){{head,0,WIDTHOFDROPDOWN,TBHEIGHT}
-    ,"File; New; Save; Save as; Load; Export",0,0});
-    head += WIDTHOFDROPDOWN;
-    dropDowns[1] = CreateDropDownBox((DropDownBox){{head,0,WIDTHOFDROPDOWN,TBHEIGHT}
-    ,"Edit; Move; Create vertices; Create edges",0,0});
-    head += WIDTHOFDROPDOWN;
-    dropDowns[2] = CreateDropDownBox((DropDownBox){{head,0,WIDTHOFDROPDOWN,TBHEIGHT}
-    ,"View; show dots; center camera",0,0});
-    head += WIDTHOFDROPDOWN + DIVIDERWIDTH;
-
-    buttons[0] = CreateButton((Button){{head,0,WIDTHOFBUTTON,TBHEIGHT},"Run",tplus});
-    head += WIDTHOFBUTTON;
-    buttons[1] = CreateButton((Button){{head,0,WIDTHOFBUTTON,TBHEIGHT},"Step",teq});
-    head += WIDTHOFBUTTON;
-    buttons[2] = CreateButton((Button){{head,0,WIDTHOFBUTTON,TBHEIGHT},"Stop",tminus});
-    head += WIDTHOFBUTTON + DIVIDERWIDTH;
-    buttons[3] = CreateButton((Button){{head,0,WIDTHOFBUTTON*2,TBHEIGHT},"Shuffle",0});
+    graphEditRef = GetGraphEditMode();
+    fileMenu = (struct Menu){"File;Save;Load;Import",0,0,0,0};
+    viewMenu = (struct Menu){"View;Show/Hide dots; center camera",0,0,0,0};
+    editMenu = (struct Menu){"Move;Grab;Add/delete vertices;Add/delete Edges",0,0,0,1};
 }
 
-void UpdateDrawToolBar()
+int UpdatedrawMenu(Rectangle pos,struct Menu *menu)
+{
+    if(!menu->isSwitchable)
+        menu->selected = 0;
+    if(GuiDropdownBox(pos,menu->text,&menu->selected,menu->isActive))
+        menu->isActive = !menu->isActive;
+    if((!menu->isSwitchable && menu->selected) || (menu->isSwitchable && (menu->selected!=menu->lastState)))
+    {
+        menu->lastState = menu->selected;
+        return menu->selected;
+    }
+    return -1;
+}
+
+void UpdateDrawToolBar(int* focus)
 {
     DrawRectangle(0,0,GetScreenWidth(),TBHEIGHT,GRAY);
-    for(int i = 0; i < 4; ++i)
-        UpdateDrawButton(buttons[i]);
-    for(int i = 0; i < 3; ++i)
-        UpdateDrawDropDownBox(dropDowns[i]);
+    if(editMenu.isActive || fileMenu.isActive || viewMenu.isActive)
+        *focus = 0;
+    switch(UpdatedrawMenu((Rectangle){0,0,WIDTHOFDROPDOWN,TBHEIGHT},&fileMenu)){
+
+    }
+    switch(UpdatedrawMenu((Rectangle){WIDTHOFDROPDOWN,0,WIDTHOFDROPDOWN,TBHEIGHT},&viewMenu)){
+
+    }
+    GuiTextBox((Rectangle){WIDTHOFDROPDOWN*2+20,0,WIDTHOFEDIT,TBHEIGHT}
+    ,"Edit mode:",18,0);
+
+/*    DrawTextEx("Edit mode:",GetScreenWidth() - WIDTHOFEDIT*2,0,18,BLACK);*/
+    int edit = UpdatedrawMenu((Rectangle){WIDTHOFDROPDOWN*3,0,WIDTHOFEDIT,TBHEIGHT},&editMenu);
+    if(edit != -1)
+        *graphEditRef = edit;
 }

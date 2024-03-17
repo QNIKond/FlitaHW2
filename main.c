@@ -4,11 +4,16 @@
 #include "headers/SafeMemoryAllocator.h"
 #include "headers/GUI/ToolBar.h"
 #include "headers/GUI/InfoWindow.h"
+#include "headers/GUI/GraphWindow.h"
+
+#include "headers/ArenaAllocator.h"
 
 #include "robotofont.h"
 
 int screenWidth = 1200;
 int screenHeight = 700;
+
+Graph graph;
 
 void UpdateDrawFrame(void);
 int main()
@@ -25,24 +30,29 @@ int main()
     //ExportFontAsCode(fnt,"../robotofont.h");
     InitializeToolBar();
     InitializeInfoWindow();
-
+    InitializeGraph(&graph);
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
 
     CloseWindow();
+    DestroyGraph(&graph);
     FreeAll();
     return 0;
 }
 
 
 char* msg = "asdfasdf";
+int focus = 1;
 void UpdateDrawFrame(void)
 {
     BeginDrawing();
-    ClearBackground(DARKGRAY);
-    UpdateDrawToolBar();
-    UpdateDrawInfoWindow();
+    ClearBackground(RAYWHITE);
+    UpdateDrawGraphWindow(&graph, &focus);
+    UpdateDrawInfoWindow(&focus);
+    focus = 1;
+    UpdateDrawToolBar(&focus);
+
     EndDrawing();
 }

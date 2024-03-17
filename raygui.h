@@ -2680,7 +2680,7 @@ int GuiTextBox(Rectangle bounds, char *text, int bufferSize, bool editMode)
         {
             if (CheckCollisionPointRec(mousePosition, bounds))
             {
-                state = STATE_FOCUSED;
+                //state = STATE_FOCUSED;
 
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                 {

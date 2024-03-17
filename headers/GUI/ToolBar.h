@@ -2,4 +2,4 @@
 
 void InitializeToolBar();
 
-void UpdateDrawToolBar();
+void UpdateDrawToolBar(int* focus);

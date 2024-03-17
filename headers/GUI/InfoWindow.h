@@ -2,4 +2,4 @@
 
 void InitializeInfoWindow();
 
-void UpdateDrawInfoWindow();
+void UpdateDrawInfoWindow(int* focus);
