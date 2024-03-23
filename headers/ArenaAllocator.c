@@ -23,6 +23,9 @@ void ResizeArena(Arena *arena)
 
 void *Alloc(Arena *arena, int* id)
 {
+    int newID = -1;
+    if(!id)
+        id = &newID;
     if(*id  == -1)
         *id = arena->filled++;
     else if (*id >= arena->filled)

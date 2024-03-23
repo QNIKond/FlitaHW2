@@ -1,7 +1,7 @@
 #include "ToolBar.h"
 #include "../../raygui.h"
 #include "GraphWindow.h"
-#include "Primitives/Layout.h"
+#include "Layout.h"
 #define WIDTHOFDROPDOWN 100
 #define WIDTHOFEDIT 150
 #define WIDTHOFBUTTON 50
@@ -22,7 +22,7 @@ void InitializeToolBar()
     graphEditRef = GetGraphEditMode();
     fileMenu = (struct Menu){"File;Save;Load;Import",0,0,0,0};
     viewMenu = (struct Menu){"View;Show/Hide dots; center camera",0,0,0,0};
-    editMenu = (struct Menu){"Move;Grab;Add/delete vertices;Add/delete Edges",0,0,0,1};
+    editMenu = (struct Menu){"Move;Grab;Add/delete vertices;Add/delete Edges",2,2,0,1};
 }
 
 int UpdatedrawMenu(Rectangle pos,struct Menu *menu)

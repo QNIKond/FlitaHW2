@@ -1,19 +1,20 @@
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
-#include "headers/SafeMemoryAllocator.h"
-#include "headers/GUI/ToolBar.h"
-#include "headers/GUI/InfoWindow.h"
-#include "headers/GUI/GraphWindow.h"
+#include "../raygui.h"
+#include "SafeMemoryAllocator.h"
+#include "GUI/ToolBar.h"
+#include "GUI/InfoWindow.h"
+#include "GUI/GraphWindow.h"
 
-#include "headers/ArenaAllocator.h"
+#include "Simulation/GraphSolver.h"
 
-#include "robotofont.h"
+#include "../robotofont.h"
 
 int screenWidth = 1200;
 int screenHeight = 700;
 
-Graph graph;
+Graph defGraph;
+GraphConfig gc;
 
 void UpdateDrawFrame(void);
 int main()
@@ -30,14 +31,16 @@ int main()
     //ExportFontAsCode(fnt,"../robotofont.h");
     InitializeToolBar();
     InitializeInfoWindow();
-    InitializeGraph(&graph);
+    InitializeGraph(&defGraph);
+    SetNewGraph(&defGraph);
+    gc = (GraphConfig){0,1,(Rectangle){0,0,1200,700}};
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
 
     CloseWindow();
-    DestroyGraph(&graph);
+    DestroyGraph(&defGraph);
     FreeAll();
     return 0;
 }
@@ -49,7 +52,8 @@ void UpdateDrawFrame(void)
 {
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    UpdateDrawGraphWindow(&graph, &focus);
+    SolveGraph(&gc);
+    UpdateDrawGraphWindow(&defGraph, &focus);
     UpdateDrawInfoWindow(&focus);
     focus = 1;
     UpdateDrawToolBar(&focus);

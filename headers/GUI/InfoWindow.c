@@ -1,6 +1,6 @@
 #include "InfoWindow.h"
 #include "../../raygui.h"
-#include "Primitives/Layout.h"
+#include "Layout.h"
 
 enum {
     IWMinimized,

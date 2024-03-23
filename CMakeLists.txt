@@ -30,28 +30,29 @@ endif()
 
 # Our Project
 
-add_executable(${PROJECT_NAME} main.c
+add_executable(${PROJECT_NAME} headers/main.c
         headers/GameCycle.c
         headers/GameCycle.h
         headers/GUI/GraphWindow.c
         headers/GUI/GraphWindow.h
-        headers/GUI/Primitives/Button.c
-        headers/GUI/Primitives/Button.h
-        headers/GUI/Primitives/DropDownBox.c
-        headers/GUI/Primitives/DropDownBox.h
         headers/SafeMemoryAllocator.c
         headers/SafeMemoryAllocator.h
-        headers/GUI/Primitives/Spinner.c
-        headers/GUI/Primitives/Spinner.h
         headers/GUI/ToolBar.c
         headers/GUI/ToolBar.h
-        headers/GUI/Primitives/Layout.h
+        headers/GUI/Layout.h
         headers/GUI/InfoWindow.c
         headers/GUI/InfoWindow.h
         headers/Simulation/Graph.c
         headers/Simulation/Graph.h
         headers/ArenaAllocator.c
-        headers/ArenaAllocator.h)
+        headers/ArenaAllocator.h
+        headers/Simulation/GraphSolver.c
+        headers/Simulation/GraphSolver.h
+        headers/Simulation/GraphData.c
+        headers/Simulation/GraphData.h
+        headers/Simulation/QuadTree.c
+        headers/Simulation/QuadTree.h
+        headers/Simulation/Pseudo.c)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

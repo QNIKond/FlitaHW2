@@ -1,7 +1,8 @@
 #pragma once
 #include "raylib.h"
 #include "../ArenaAllocator.h"
-
+//#include "QuadTree.h"
+struct QUADTREE;
 struct GRAPHEDGE;
 typedef int nodeID;
 typedef int edgeID;
@@ -25,12 +26,14 @@ typedef struct GRAPH
 {
     Arena nodes;
     Arena edges;
+    Arena qtree;
 } Graph;
-
-void InitializeGraph(Graph* graph);
 
 #define GETNODES(X) ((GraphNode*)X->nodes.memBlock)
 #define GETEDGES(X) ((GraphEdge*)X->edges.memBlock)
+#define GETQTNODES(X) ((QuadTree*)X->qtree.memBlock)
+
+void InitializeGraph(Graph* graph);
 
 void PlaceNewNode(Graph *graph, Vector2 pos);
 

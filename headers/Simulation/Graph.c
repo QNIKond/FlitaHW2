@@ -1,10 +1,11 @@
 #include "Graph.h"
-#include "malloc.h"
+#include "QuadTree.h"
 
 void InitializeGraph(Graph* graph)
 {
     CreateArena(&graph->nodes,sizeof(GraphNode));
     CreateArena(&graph->edges,sizeof(GraphEdge));
+    CreateArena(&graph->qtree,sizeof(QuadTree));
 }
 
 edgeID CreateEdges(Graph *graph, nodeID node,nodeID* neighbours, int neighboursCount);
@@ -84,4 +85,5 @@ void DestroyGraph(Graph *graph)
 {
     FreeArena(&graph->nodes);
     FreeArena(&graph->edges);
+    FreeArena(&graph->qtree);
 }

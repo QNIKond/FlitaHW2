@@ -1,12 +1,43 @@
 #include "GraphWindow.h"
 #include "raylib.h"
-#include "Primitives/Layout.h"
+#include "Layout.h"
+#include "../Simulation/QuadTree.h"
 
-GraphEditMode graphEditMode = GEMMoveCamera;
-
+GraphEditMode graphEditMode = GEMEditVertices;
+int t = 1;
 GraphEditMode *GetGraphEditMode()
 {
     return &graphEditMode;
+}
+#define ROUND(X) ((int)X + ((int)(X*10)%10>=5))
+//#define ROUND(X) (ROUND1((X/2))*2)
+void DrawTree(Graph* graph, qtID leaf,Rectangle box)
+{
+    if(!graph->qtree.filled)
+        return;
+    Color color;
+    if(GETQTNODES(graph)[leaf].isLeaf && (GETQTNODES(graph)[leaf].children[0] != -1))
+        color = RED;
+    else
+        color = GREEN;
+
+    if(IsKeyPressed(KEY_Q))
+        t += 1;
+    if(IsKeyPressed(KEY_W))
+        t -= 1;
+    if(IsKeyPressed(KEY_E))
+        t = 1;
+
+    DrawRectangleLinesEx((Rectangle){ROUND(box.x),ROUND(box.y),ROUND(box.width),ROUND(box.height)},1,color);
+    //DrawRectangleLines(ROUND(box.x),ROUND(box.y),ROUND(box.width)+1,ROUND(box.height)+1,color);
+    if(!GETQTNODES(graph)[leaf].isLeaf)
+    {
+        for(int i = 0; i < 2; ++i)
+            for(int j = 0; j < 2; ++j)
+                if(GETQTNODES(graph)[leaf].children[i + j*2] != -1)
+                    DrawTree(graph,GETQTNODES(graph)[leaf].children[i+j*2]
+                             ,(Rectangle){box.x + box.width/2.f*(float)i,box.y + box.height/2.f*(float)j,box.width/2,box.height/2});
+    }
 }
 
 void DrawGraph(Graph* graph)
@@ -87,6 +118,7 @@ void UpdateDrawGraphWindow(Graph* graph, int* focus)
 {
     DrawGraph(graph);
     Rectangle bounds = {0,TBHEIGHT,GetScreenWidth()-IWWIDTH,GetScreenHeight()-TBHEIGHT};
+    DrawTree(graph,0,(Rectangle){0,0,1200,700});
     if(!CheckCollisionPointRec(GetMousePosition(),bounds))
         return;
     if(*focus)
