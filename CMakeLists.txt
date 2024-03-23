@@ -52,7 +52,7 @@ add_executable(${PROJECT_NAME} headers/main.c
         headers/Simulation/GraphData.h
         headers/Simulation/QuadTree.c
         headers/Simulation/QuadTree.h
-        headers/Simulation/Pseudo.c)
+)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 
