@@ -20,16 +20,9 @@ void DrawTree(Graph* graph, qtID leaf,Rectangle box)
         color = RED;
     else
         color = GREEN;
-
-    if(IsKeyPressed(KEY_Q))
-        t += 1;
-    if(IsKeyPressed(KEY_W))
-        t -= 1;
-    if(IsKeyPressed(KEY_E))
-        t = 1;
-
-    DrawRectangleLinesEx((Rectangle){ROUND(box.x),ROUND(box.y),ROUND(box.width),ROUND(box.height)},1,color);
-    //DrawRectangleLines(ROUND(box.x),ROUND(box.y),ROUND(box.width)+1,ROUND(box.height)+1,color);
+    if(IsKeyDown(KEY_T))
+        DrawRectangleLinesEx((Rectangle){ROUND(box.x),ROUND(box.y),ROUND(box.width),ROUND(box.height)},1,color);
+    DrawCircleV(GETQTNODES(graph)[leaf].massCenter,GETQTNODES(graph)[leaf].mass,RED);
     if(!GETQTNODES(graph)[leaf].isLeaf)
     {
         for(int i = 0; i < 2; ++i)

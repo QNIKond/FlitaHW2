@@ -19,8 +19,9 @@ void Cycle(GraphConfig *gc)
 
 void SolveGraph(GraphConfig *gc)
 {
-    for(int i = 0; i < gc->globalIterations+gc->perCycleIterations; ++i)
-        Cycle(gc);
+    if(!IsKeyDown(KEY_S))
+        for(int i = 0; i < gc->globalIterations+gc->perCycleIterations; ++i)
+            Cycle(gc);
     gc->globalIterations = 0;
     //if(IsKeyPressed(KEY_V))
         BuildQuadTree(graph,gc->bounds,8);
