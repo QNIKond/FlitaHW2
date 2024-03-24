@@ -10,7 +10,6 @@ GraphEditMode *GetGraphEditMode()
     return &graphEditMode;
 }
 #define ROUND(X) ((int)X + ((int)(X*10)%10>=5))
-//#define ROUND(X) (ROUND1((X/2))*2)
 void DrawTree(Graph* graph, qtID leaf,Rectangle box)
 {
     if(!graph->qtree.filled)
@@ -22,6 +21,7 @@ void DrawTree(Graph* graph, qtID leaf,Rectangle box)
         color = GREEN;
     if(IsKeyDown(KEY_T))
         DrawRectangleLinesEx((Rectangle){ROUND(box.x),ROUND(box.y),ROUND(box.width),ROUND(box.height)},1,color);
+    if(IsKeyDown(KEY_O))
     DrawCircleV(GETQTNODES(graph)[leaf].massCenter,GETQTNODES(graph)[leaf].mass,RED);
     if(!GETQTNODES(graph)[leaf].isLeaf)
     {
@@ -80,8 +80,11 @@ Rectangle TrySelect()
 
 void EditVertices(Graph* graph)
 {
-    if(IsMouseButtonPressed(0))
+    if((IsMouseButtonPressed(0) || IsMouseButtonPressed(1)) && (FindNodeByPosition(graph,GetMousePosition()) != -1))
+        graphEditMode = GEMEditEdges;
+    else if(IsMouseButtonPressed(0)) {
         PlaceNewNode(graph, GetMousePosition());
+    }
     else if(IsMouseButtonPressed(1))
         DeleteNode(graph, FindNodeByPosition(graph,GetMousePosition()));
 }
@@ -89,21 +92,44 @@ void EditVertices(Graph* graph)
 void EditEdges(Graph *graph)
 {
     static char isDragging = 0;
+    static nodeID dragNext = -1;
     static nodeID dragStart = -1;
-    if(IsMouseButtonDown(0)){
-        if(isDragging)
-            DrawLineV(GetMousePosition(), GETNODES(graph)[dragStart].pos,BLUE);
+    if(IsMouseButtonDown(0)||IsMouseButtonDown(1)){
+        if(isDragging) {
+            DrawLineV(GetMousePosition(), GETNODES(graph)[dragNext].pos, BLUE);
+            nodeID dragEnd = FindNodeByPosition(graph, GetMousePosition());
+            if(dragEnd != -1) {
+                if(IsMouseButtonDown(0))
+                    ConnectNodes(graph, dragNext, dragEnd);
+                else {
+                    if((dragStart == dragEnd) && (dragStart != -1)) {
+                        DeleteNode(graph, dragNext);
+                        isDragging = 0;
+                    }
+
+                    DisconnectNodes(graph, dragNext, dragEnd);
+                }
+                dragNext = dragEnd;
+            }
+        }
         else{
-            dragStart = FindNodeByPosition(graph,GetMousePosition());
-            if(dragStart != -1)
+            dragNext = FindNodeByPosition(graph, GetMousePosition());
+            dragStart = dragNext;
+            if(dragNext != -1)
                 isDragging = 1;
         }
     }
     else if(isDragging){
+/*        nodeID dragEnd = FindNodeByPosition(graph, GetMousePosition());
+        if((dragStart == dragEnd) && (dragStart != -1)) {
+            DeleteNode(graph, dragNext);
+            isDragging = 0;
+        }
+        */
         isDragging = 0;
-        nodeID dragEnd = FindNodeByPosition(graph, GetMousePosition());
-        if(dragEnd != -1)
-            FlipNodesConnection(graph, dragStart, dragEnd);
+    }
+    else{
+        graphEditMode = GEMEditVertices;
     }
 }
 
@@ -111,7 +137,8 @@ void UpdateDrawGraphWindow(Graph* graph, int* focus)
 {
     DrawGraph(graph);
     Rectangle bounds = {0,TBHEIGHT,GetScreenWidth()-IWWIDTH,GetScreenHeight()-TBHEIGHT};
-    DrawTree(graph,0,(Rectangle){0,0,1200,700});
+    if(IsKeyDown(KEY_O) || IsKeyDown(KEY_T) )
+        DrawTree(graph,0,(Rectangle){0,0,1200,700});
     if(!CheckCollisionPointRec(GetMousePosition(),bounds))
         return;
     if(*focus)

@@ -42,13 +42,13 @@ void AddEdge(Graph* graph, nodeID source, nodeID dest)
 
 }
 
-int FlipEdge(Graph *graph, nodeID node1, nodeID node2)
+int SetEdge(Graph *graph, nodeID node1, nodeID node2, int state)
 {
     edgeID curEdge = GETNODES(graph)[node1].edges;
     while (curEdge != EOEDGELIST) {
         if(GETEDGES(graph)[curEdge].node == node2)
         {
-            GETEDGES(graph)[curEdge].state ^= 1;
+            GETEDGES(graph)[curEdge].state = state;
             return 1;
         }
         curEdge = GETEDGES(graph)[curEdge].nextEdge;
@@ -56,16 +56,24 @@ int FlipEdge(Graph *graph, nodeID node1, nodeID node2)
     return 0;
 }
 
-void FlipNodesConnection(Graph *graph, nodeID node1, nodeID node2)
+void ConnectNodes(Graph *graph, nodeID node1, nodeID node2)
 {
     if(node1 == node2)
         return;
-    if(FlipEdge(graph,node1,node2)){
-        FlipEdge(graph,node2,node1);
+    if(SetEdge(graph, node1, node2,1)){
+        SetEdge(graph, node2, node1,1);
     }
     else {
         AddEdge(graph, node1, node2);
         AddEdge(graph, node2, node1);
+    }
+}
+
+void DisconnectNodes(Graph *graph, nodeID node1, nodeID node2){
+    if(node1 == node2)
+        return;
+    if(SetEdge(graph, node1, node2,0)){
+        SetEdge(graph, node2, node1,0);
     }
 }
 

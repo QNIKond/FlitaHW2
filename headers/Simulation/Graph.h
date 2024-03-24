@@ -39,7 +39,8 @@ void PlaceNewNode(Graph *graph, Vector2 pos);
 
 void DeleteNode(Graph* graph, nodeID node);
 
-void FlipNodesConnection(Graph *graph, nodeID node1, nodeID node2);
+void ConnectNodes(Graph *graph, nodeID node1, nodeID node2);
+void DisconnectNodes(Graph *graph, nodeID node1, nodeID node2);
 
 nodeID FindNodeByPosition(Graph *graph, Vector2 point);
 
