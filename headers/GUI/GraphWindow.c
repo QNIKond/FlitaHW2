@@ -9,6 +9,25 @@ GraphEditMode *GetGraphEditMode()
 {
     return &graphEditMode;
 }
+
+Vector2 cameraPos = {0,0};
+float zoom = 1;
+Vector2 GetAbs(Vector2 point){
+    return (Vector2){((point.x-cameraPos.x) - GetScreenWidth()/2.)*zoom + GetScreenWidth()/2.,
+                     ((point.y-cameraPos.y) - GetScreenHeight()/2.)*zoom + GetScreenHeight()/2.};
+}
+
+Rectangle GetAbsRect(Rectangle rect){
+    Vector2 newPos = GetAbs((Vector2) {rect.x, rect.y});
+    Vector2 newSize = GetAbs((Vector2) {rect.width + rect.x, rect.height + rect.y});
+    return  (Rectangle){newPos.x,newPos.y, newSize.x-newPos.x,newSize.y-newPos.y};
+}
+
+Vector2 GetRel(Vector2 point){
+    return (Vector2){(point.x - GetScreenWidth()/2.)/zoom + GetScreenWidth()/2. + cameraPos.x,
+                     (point.y - GetScreenHeight()/2.)/zoom + GetScreenHeight()/2. + cameraPos.y};
+}
+
 #define ROUND(X) ((int)X + ((int)(X*10)%10>=5))
 void DrawTree(Graph* graph, qtID leaf,Rectangle box)
 {
@@ -20,9 +39,9 @@ void DrawTree(Graph* graph, qtID leaf,Rectangle box)
     else
         color = GREEN;
     if(IsKeyDown(KEY_T))
-        DrawRectangleLinesEx((Rectangle){ROUND(box.x),ROUND(box.y),ROUND(box.width),ROUND(box.height)},1,color);
+        DrawRectangleLinesEx(GetAbsRect((Rectangle) {ROUND(box.x), ROUND(box.y), ROUND(box.width), ROUND(box.height)}), 1, color);
     if(IsKeyDown(KEY_O))
-    DrawCircleV(GETQTNODES(graph)[leaf].massCenter,GETQTNODES(graph)[leaf].mass,RED);
+    DrawCircleV(GetAbs(GETQTNODES(graph)[leaf].massCenter), GETQTNODES(graph)[leaf].mass, RED);
     if(!GETQTNODES(graph)[leaf].isLeaf)
     {
         for(int i = 0; i < 2; ++i)
@@ -41,18 +60,18 @@ void DrawGraph(Graph* graph)
     for (int i = 0; i < graph->nodes.filled; ++i) {
         if(!GETNODES(graph)[i].state)
             continue;
-        DrawCircleV(GETNODES(graph)[i].pos, DOTRADIUS, BLACK);
+        DrawCircleV(GetAbs(GETNODES(graph)[i].pos), DOTRADIUS, BLACK);
         curEdge = GETNODES(graph)[i].edges;
         while(curEdge != EOEDGELIST)
         {
             if((GETEDGES(graph)[curEdge].node>i)&&(GETEDGES(graph)[curEdge].state&1)&&
                     (GETNODES(graph)[GETEDGES(graph)[curEdge].node].state&1))
-                DrawLineV(GETNODES(graph)[i].pos,GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos,BLACK);
+                DrawLineV(GetAbs(GETNODES(graph)[i].pos),
+                          GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
             curEdge = GETEDGES(graph)[curEdge].nextEdge;
         }
     }
 }
-
 
 #define MINN(X,Y) ((X)>(Y) ? (Y) : (X))
 #define ABS(X) ((X)>=0 ? (X) : (-(X)))
@@ -78,15 +97,38 @@ Rectangle TrySelect()
     return (Rectangle){0,0,0,0};
 }
 
+void UpdateCameraPosition(){
+    static int isDragging = 0;
+    static Vector2 dragStart = {0,0};
+    static Vector2 cameraStart = {0,0};
+    Vector2 mousePos = GetMousePosition();
+    if(IsMouseButtonDown(0)){
+        if(!isDragging){
+            isDragging = 1;
+            dragStart = mousePos;
+            cameraStart = cameraPos;
+        }
+        cameraPos = (Vector2){cameraStart.x-(mousePos.x-dragStart.x)/zoom,
+                              cameraStart.y-(mousePos.y-dragStart.y)/zoom};
+    }
+    else {
+        isDragging = 0;
+    }
+    if(GetMouseWheelMove()>0)
+        zoom *= 1.1;
+    else if(GetMouseWheelMove()<0)
+        zoom /= 1.1;
+}
+
 void EditVertices(Graph* graph)
 {
-    if((IsMouseButtonPressed(0) || IsMouseButtonPressed(1)) && (FindNodeByPosition(graph,GetMousePosition()) != -1))
+    if((IsMouseButtonPressed(0) || IsMouseButtonPressed(1)) && (FindNodeByPosition(graph,GetRel(GetMousePosition())) != -1))
         graphEditMode = GEMEditEdges;
     else if(IsMouseButtonPressed(0)) {
-        PlaceNewNode(graph, GetMousePosition());
+        PlaceNewNode(graph, GetRel(GetMousePosition()));
     }
     else if(IsMouseButtonPressed(1))
-        DeleteNode(graph, FindNodeByPosition(graph,GetMousePosition()));
+        DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition())));
 }
 
 void EditEdges(Graph *graph)
@@ -96,8 +138,8 @@ void EditEdges(Graph *graph)
     static nodeID dragStart = -1;
     if(IsMouseButtonDown(0)||IsMouseButtonDown(1)){
         if(isDragging) {
-            DrawLineV(GetMousePosition(), GETNODES(graph)[dragNext].pos, BLUE);
-            nodeID dragEnd = FindNodeByPosition(graph, GetMousePosition());
+            DrawLineV(GetMousePosition(), GetAbs(GETNODES(graph)[dragNext].pos), BLUE);
+            nodeID dragEnd = FindNodeByPosition(graph, GetRel(GetMousePosition()));
             if(dragEnd != -1) {
                 if(IsMouseButtonDown(0))
                     ConnectNodes(graph, dragNext, dragEnd);
@@ -113,19 +155,13 @@ void EditEdges(Graph *graph)
             }
         }
         else{
-            dragNext = FindNodeByPosition(graph, GetMousePosition());
+            dragNext = FindNodeByPosition(graph, GetRel(GetMousePosition()));
             dragStart = dragNext;
             if(dragNext != -1)
                 isDragging = 1;
         }
     }
     else if(isDragging){
-/*        nodeID dragEnd = FindNodeByPosition(graph, GetMousePosition());
-        if((dragStart == dragEnd) && (dragStart != -1)) {
-            DeleteNode(graph, dragNext);
-            isDragging = 0;
-        }
-        */
         isDragging = 0;
     }
     else{
@@ -145,6 +181,7 @@ void UpdateDrawGraphWindow(Graph* graph, int* focus)
         switch(graphEditMode){
 
         case GEMMoveCamera:
+            UpdateCameraPosition();
             break;
         case GEMMoveVertices:
             break;
