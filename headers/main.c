@@ -5,6 +5,10 @@
 #include "GUI/ToolBar.h"
 #include "GUI/InfoWindow.h"
 #include "GUI/GraphWindow.h"
+#include "GUI/Keybinds.h"
+#include "System/FileManager.h"
+
+#include "../sfd.h"
 
 #include "Simulation/GraphSolver.h"
 
@@ -13,7 +17,7 @@
 int screenWidth = 1200;
 int screenHeight = 700;
 
-Graph defGraph;
+Graph *curGraph;
 GraphConfig gc;
 
 void UpdateDrawFrame(void);
@@ -31,16 +35,16 @@ int main()
     //ExportFontAsCode(fnt,"../robotofont.h");
     InitializeToolBar();
     InitializeInfoWindow();
-    InitializeGraph(&defGraph);
-    SetNewGraph(&defGraph);
-    gc = (GraphConfig){0,1,(Rectangle){0,0,1200,700}};
+    curGraph = GetDefaultGraph();
+    SetNewGraphToSolve(curGraph);
+    InitializeGraphConfig(&gc);
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
 
     CloseWindow();
-    DestroyGraph(&defGraph);
+    DestroyGraph(curGraph);
     FreeAll();
     return 0;
 }
@@ -48,15 +52,22 @@ int main()
 
 char* msg = "asdfasdf";
 int focus = 1;
+const char *filename = 0;
 void UpdateDrawFrame(void)
 {
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(DARKGRAY);
+
+    if(IsKeyPressed(KEY_Y)){
+        Graph* g = OpenAdjacencyGraph(&gc);
+        if(g)
+            curGraph = g;
+    }
     SolveGraph(&gc);
-    UpdateDrawGraphWindow(&defGraph, &focus);
+    UpdateDrawGraphWindow(curGraph,&gc, &focus);
     UpdateDrawInfoWindow(&focus);
     focus = 1;
     UpdateDrawToolBar(&focus);
-
+    CheckKeyBinds(&gc);
     EndDrawing();
 }

@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include "QuadTree.h"
+#include <stdlib.h>
 
 void InitializeGraph(Graph* graph)
 {
@@ -14,6 +15,11 @@ void PlaceNewNode(Graph *graph, Vector2 pos)
 {
     int id = -1;
     *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST,pos,1};
+}
+
+void CreateNode(Graph *graph, nodeID id)
+{
+    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST, {0,0},1};
 }
 
 void DeleteNode(Graph* graph, nodeID node)
@@ -79,14 +85,26 @@ void DisconnectNodes(Graph *graph, nodeID node1, nodeID node2){
 
 #define ACCURACY 10
 #define ABS(X) ((X)>=0 ? (X) : (-(X)))
-nodeID FindNodeByPosition(Graph *graph, Vector2 point)
+nodeID FindNodeByPosition(Graph *graph, Vector2 point, float radius)
 {
     for (int i = 0; i < graph->nodes.filled; ++i) {
-        if((ABS(GETNODES(graph)[i].pos.x - point.x) < ACCURACY) &&
-                (ABS(GETNODES(graph)[i].pos.y - point.y) < ACCURACY) &&GETNODES(graph)[i].state)
+        if((ABS(GETNODES(graph)[i].pos.x - point.x) < radius) &&
+                (ABS(GETNODES(graph)[i].pos.y - point.y) < radius) &&GETNODES(graph)[i].state)
             return i;
     }
     return -1;
+}
+
+void ShuffleNodes(Graph *graph,Rectangle bounds){
+    for(int i = 0; i < graph->nodes.filled; ++i)
+    GETNODES(graph)[i].pos = (Vector2){bounds.x + (float)(rand()%(int)bounds.width),
+                                       bounds.y + (float)(rand()%(int)bounds.height)};
+}
+
+void ResetGraph(Graph *graph){
+    ResetArena(&graph->nodes);
+    ResetArena(&graph->edges);
+    ResetArena(&graph->qtree);
 }
 
 void DestroyGraph(Graph *graph)

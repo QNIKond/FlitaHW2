@@ -35,6 +35,12 @@ void *Alloc(Arena *arena, int* id)
     return arena->memBlock + *id * arena->elementSize;
 }
 
+void ResetArena(Arena *arena){
+    arena->filled = 0;
+    arena->blockSize = DEFAULTARENASIZE/2;
+    ResizeArena(arena);
+}
+
 void FreeArena(Arena *arena)
 {
     free(arena->memBlock);

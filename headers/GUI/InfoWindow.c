@@ -14,8 +14,8 @@ void InitializeInfoWindow()
 
 }
 
-void UpdateDrawInfoPanel(){
-
+void UpdateDrawInfoPanel(Rectangle rect){
+    GuiTextBox(rect,"asdf\nfdsa",18,0);
 }
 
 void UpdateDrawSettingsPanel(){
@@ -47,7 +47,7 @@ void UpdateDrawInfoWindow(int *focus){
         case IWMinimized:
             break;
         case IWInfo:
-            UpdateDrawInfoPanel();
+            UpdateDrawInfoPanel(rect);
             break;
         case IWSettings:
             UpdateDrawSettingsPanel();

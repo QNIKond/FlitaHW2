@@ -1,5 +1,6 @@
 #pragma once
 #include "../Simulation/Graph.h"
+#include "../Simulation/GraphData.h"
 
 typedef enum
 {
@@ -9,6 +10,6 @@ typedef enum
     GEMEditEdges
 } GraphEditMode;
 
-void UpdateDrawGraphWindow(Graph* graph, int* focus);
+void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc, int* focus);
 
 GraphEditMode *GetGraphEditMode();

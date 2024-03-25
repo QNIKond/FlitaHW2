@@ -1,6 +1,6 @@
 #pragma once
 #include "raylib.h"
-#include "../ArenaAllocator.h"
+#include "../System/ArenaAllocator.h"
 //#include "QuadTree.h"
 struct QUADTREE;
 struct GRAPHEDGE;
@@ -37,11 +37,18 @@ void InitializeGraph(Graph* graph);
 
 void PlaceNewNode(Graph *graph, Vector2 pos);
 
+void CreateNode(Graph *graph, nodeID id);
+
 void DeleteNode(Graph* graph, nodeID node);
 
 void ConnectNodes(Graph *graph, nodeID node1, nodeID node2);
+
 void DisconnectNodes(Graph *graph, nodeID node1, nodeID node2);
 
-nodeID FindNodeByPosition(Graph *graph, Vector2 point);
+nodeID FindNodeByPosition(Graph *graph, Vector2 point, float radius);
+
+void ShuffleNodes(Graph *graph,Rectangle bounds);
+
+void ResetGraph(Graph *graph);
 
 void DestroyGraph(Graph *graph);

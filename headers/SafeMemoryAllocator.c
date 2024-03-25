@@ -7,7 +7,7 @@ int allocCount = 0;
 
 void *SMalloc(size_t size)
 {
-    return SCalloc(1,size);
+    return 0;
 }
 
 void *SCalloc(size_t num,size_t size)

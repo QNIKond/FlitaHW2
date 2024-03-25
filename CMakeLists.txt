@@ -44,14 +44,19 @@ add_executable(${PROJECT_NAME} headers/main.c
         headers/GUI/InfoWindow.h
         headers/Simulation/Graph.c
         headers/Simulation/Graph.h
-        headers/ArenaAllocator.c
-        headers/ArenaAllocator.h
+        headers/System/ArenaAllocator.c
+        headers/System/ArenaAllocator.h
         headers/Simulation/GraphSolver.c
         headers/Simulation/GraphSolver.h
         headers/Simulation/GraphData.c
         headers/Simulation/GraphData.h
         headers/Simulation/QuadTree.c
         headers/Simulation/QuadTree.h
+        headers/GUI/Keybinds.c
+        headers/GUI/Keybinds.h
+        sfd.c
+        headers/System/FileManager.c
+        headers/System/FileManager.h
 )
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)

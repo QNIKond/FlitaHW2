@@ -3,9 +3,9 @@
 #include <math.h>
 Graph* graph;
 
-void SetNewGraph(Graph* gr)
+void SetNewGraphToSolve(Graph* g)
 {
-    graph = gr;
+    graph = g;
 }
 #define C 0.2f
 #define K 100
@@ -76,10 +76,10 @@ void Cycle(GraphConfig *gc)
 
 void SolveGraph(GraphConfig *gc)
 {
-    if(IsKeyDown(KEY_S))
+    if(gc->isRunning)
         for(int i = 0; i < gc->globalIterations+gc->perCycleIterations; ++i)
             Cycle(gc);
     gc->globalIterations = 0;
     //if(IsKeyPressed(KEY_V))
-        BuildQuadTree(graph,gc->bounds,8);
+    BuildQuadTree(graph,gc->bounds,8);
 }

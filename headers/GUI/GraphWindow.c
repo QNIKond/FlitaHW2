@@ -122,13 +122,13 @@ void UpdateCameraPosition(){
 
 void EditVertices(Graph* graph)
 {
-    if((IsMouseButtonPressed(0) || IsMouseButtonPressed(1)) && (FindNodeByPosition(graph,GetRel(GetMousePosition())) != -1))
+    if((IsMouseButtonPressed(0) || IsMouseButtonPressed(1)) && (FindNodeByPosition(graph,GetRel(GetMousePosition()),10/zoom) != -1))
         graphEditMode = GEMEditEdges;
     else if(IsMouseButtonPressed(0)) {
         PlaceNewNode(graph, GetRel(GetMousePosition()));
     }
     else if(IsMouseButtonPressed(1))
-        DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition())));
+        DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom));
 }
 
 void EditEdges(Graph *graph)
@@ -139,7 +139,7 @@ void EditEdges(Graph *graph)
     if(IsMouseButtonDown(0)||IsMouseButtonDown(1)){
         if(isDragging) {
             DrawLineV(GetMousePosition(), GetAbs(GETNODES(graph)[dragNext].pos), BLUE);
-            nodeID dragEnd = FindNodeByPosition(graph, GetRel(GetMousePosition()));
+            nodeID dragEnd = FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom);
             if(dragEnd != -1) {
                 if(IsMouseButtonDown(0))
                     ConnectNodes(graph, dragNext, dragEnd);
@@ -155,7 +155,7 @@ void EditEdges(Graph *graph)
             }
         }
         else{
-            dragNext = FindNodeByPosition(graph, GetRel(GetMousePosition()));
+            dragNext = FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom);
             dragStart = dragNext;
             if(dragNext != -1)
                 isDragging = 1;
@@ -169,10 +169,11 @@ void EditEdges(Graph *graph)
     }
 }
 
-void UpdateDrawGraphWindow(Graph* graph, int* focus)
+void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc,int* focus)
 {
-    DrawGraph(graph);
     Rectangle bounds = {0,TBHEIGHT,GetScreenWidth()-IWWIDTH,GetScreenHeight()-TBHEIGHT};
+    DrawRectangleRec(GetAbsRect(gc->bounds), RAYWHITE);
+    DrawGraph(graph);
     if(IsKeyDown(KEY_O) || IsKeyDown(KEY_T) )
         DrawTree(graph,0,(Rectangle){0,0,1200,700});
     if(!CheckCollisionPointRec(GetMousePosition(),bounds))
