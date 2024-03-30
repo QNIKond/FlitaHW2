@@ -12,6 +12,7 @@ GraphEditMode *GetGraphEditMode()
 
 Vector2 cameraPos = {0,0};
 float zoom = 1;
+
 Vector2 GetAbs(Vector2 point){
     return (Vector2){((point.x-cameraPos.x) - GetScreenWidth()/2.)*zoom + GetScreenWidth()/2.,
                      ((point.y-cameraPos.y) - GetScreenHeight()/2.)*zoom + GetScreenHeight()/2.};
@@ -28,7 +29,8 @@ Vector2 GetRel(Vector2 point){
                      (point.y - GetScreenHeight()/2.)/zoom + GetScreenHeight()/2. + cameraPos.y};
 }
 
-#define ROUND(X) ((int)X + ((int)(X*10)%10>=5))
+//#define ROUND(X) ((int)X + ((int)(X*10)%10>=5))
+#define ROUND(X) X
 void DrawTree(Graph* graph, qtID leaf,Rectangle box)
 {
     if(!graph->qtree.filled)
@@ -189,7 +191,7 @@ void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc,int* focus)
     DrawRectangleRec(GetAbsRect(gc->bounds), RAYWHITE);
     DrawGraph(graph);
     if(IsKeyDown(KEY_O) || IsKeyDown(KEY_T) )
-        DrawTree(graph,0,(Rectangle){0,0,1200,700});
+        DrawTree(graph,0,gc->bounds);
     if(!CheckCollisionPointRec(GetMousePosition(),bounds))
         return;
     if(*focus)

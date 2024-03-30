@@ -15,7 +15,7 @@ enum {
     IWHelp
 } IWState = IWInfo;
 
-#define SETTINGSCOUNT 3
+#define SETTINGSCOUNT 30
 typedef struct{
     const char* text;
     double minValue;
@@ -31,9 +31,11 @@ void InitializeInfoWindow()
 {
     for(int i = 0; i < SETTINGSCOUNT; ++i)
         settings[i] = (Setting){0, 0, 0, 0,"", 0};
-    settings[0] = (Setting){"Bounds width", 30, 500, 0,"", 0};
-    settings[1] = (Setting){"Bounds height", 100, 2000, 0,"", 0};
-    settings[2] = (Setting){"Root state", 0, 10, 1,"", 0};
+    settings[0] = (Setting){"Bounds width", 10, 5000, 0,"", 0};
+    settings[1] = (Setting){"Bounds height", 10, 5000, 0,"", 0};
+    settings[2] = (Setting){"Edge resize constant", 0.00001, 1000, 0,"", 0};
+    settings[3] = (Setting){"Repulsive force strength", 0.00001, 1000, 0,"", 0};
+    settings[4] = (Setting){"Low heat", 0.00001, 1000, 0,"", 0};
 }
 
 void DrawInfoLine(Rectangle *bounds, const char* text, double value,int acc){
@@ -47,10 +49,10 @@ void DrawInfoLine(Rectangle *bounds, const char* text, double value,int acc){
 
 void UpdateDrawInfoPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     Rectangle textBounds = {rect.x+10,rect.y+18,rect.width,18};
-    DrawInfoLine(&textBounds,"Filled nodes count:    ",graph->nodes.filled,0);
-    DrawInfoLine(&textBounds,"Filled edges count:    ",graph->edges.filled,0);
-    DrawInfoLine(&textBounds,"root:    ", GETQTNODES(graph)[0].mass,0);
-    DrawInfoLine(&textBounds,"root:    ", GETQTNODES(graph)[0].massCenter.x,0);
+    DrawInfoLine(&textBounds,"Filled nodes count:    ", GETQTNODES(graph)[0].mass,0);
+    DrawInfoLine(&textBounds,"Nodes:    ",gc->verticesCount,0);
+    DrawInfoLine(&textBounds,"Edges:    ",gc->edgesCount,0);
+    DrawInfoLine(&textBounds,"Desired length:    ",gc->K,0);
 }
 
 void UpdateDrawSettingsLine(Rectangle *bounds,Setting *setting,void *value){
@@ -84,7 +86,9 @@ void UpdateDrawSettingsPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     Rectangle textBounds = {rect.x+10,rect.y+18,rect.width,18};
     UpdateDrawSettingsLine(&textBounds,&settings[0],&gc->bounds.width);
     UpdateDrawSettingsLine(&textBounds,&settings[1],&gc->bounds.height);
-    UpdateDrawSettingsLine(&textBounds,&settings[2], &GETNODES(graph)[0].state);
+    UpdateDrawSettingsLine(&textBounds,&settings[2],&gc->edgeResizeConst);
+    UpdateDrawSettingsLine(&textBounds,&settings[3],&gc->C);
+    UpdateDrawSettingsLine(&textBounds,&settings[4],&gc->heat);
 }
 
 void UpdateDrawHelpPanel(Rectangle rect)
