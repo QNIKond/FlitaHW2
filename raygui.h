@@ -2439,7 +2439,7 @@ int GuiDropdownBox(Rectangle bounds, const char *text, int *active, bool editMod
 
 // Text Box control
 // NOTE: Returns true on ENTER pressed (useful for data validation)
-int GuiTextBox(Rectangle bounds, char *text, int bufferSize, bool editMode)
+int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
 {
     #if !defined(RAYGUI_TEXTBOX_AUTO_CURSOR_COOLDOWN)
         #define RAYGUI_TEXTBOX_AUTO_CURSOR_COOLDOWN  40        // Frames to wait for autocursor movement
@@ -2528,7 +2528,7 @@ int GuiTextBox(Rectangle bounds, char *text, int bufferSize, bool editMode)
 
             // Add codepoint to text, at current cursor position
             // NOTE: Make sure we do not overflow buffer size
-            if (((multiline && (codepoint == (int)'\n')) || (codepoint >= 32)) && ((textLength + codepointSize) < bufferSize))
+            if (((multiline && (codepoint == (int)'\n')) || (codepoint >= 32)) && ((textLength + codepointSize) < textSize))
             {
                 // Move forward data from cursor position
                 for (int i = (textLength + codepointSize); i > textBoxCursorIndex; i--) text[i] = text[i - codepointSize];
@@ -2680,7 +2680,7 @@ int GuiTextBox(Rectangle bounds, char *text, int bufferSize, bool editMode)
         {
             if (CheckCollisionPointRec(mousePosition, bounds))
             {
-                //state = STATE_FOCUSED;
+                state = STATE_FOCUSED;
 
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                 {

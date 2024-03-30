@@ -4,7 +4,9 @@
 void CheckKeyBinds(GraphConfig *gc){
     if(IsKeyDown(KEY_SPACE))
         *GetGraphEditMode() = GEMMoveCamera;
-    else if(*GetGraphEditMode() == GEMMoveCamera)
+    else if(IsKeyDown(KEY_LEFT_SHIFT))
+        *GetGraphEditMode() = GEMMoveVertices;
+    else if((*GetGraphEditMode() != GEMEditVertices)&&(*GetGraphEditMode() != GEMEditEdges))
         *GetGraphEditMode() = GEMEditVertices;
     if(IsKeyPressed(KEY_S))
         gc->globalIterations = 1;

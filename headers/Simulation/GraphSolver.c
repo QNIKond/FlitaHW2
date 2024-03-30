@@ -41,15 +41,16 @@ void ApplyForces(GraphConfig* gc, nodeID node){
         }
         edge = GETEDGES(graph)[edge].nextEdge;
     }
-    /*Vector2 center = (Vector2){gc->bounds.width/2+gc->bounds.x,gc->bounds.height/2+gc->bounds.y};
-    mod = GetMod(nodePos,center);
-    force.x += (center.x-nodePos.x)/mod;
-    force.y += (center.y-nodePos.y)/mod;*/
+
+
     mod = GetMod(force,(Vector2){0,0});
     if(mod > 0) {
         GETNODES(graph)[node].pos.x += force.x / mod;
         GETNODES(graph)[node].pos.y += force.y / mod;
     }
+
+    GETNODES(graph)[node].pos.x +=gc->bounds.width/2 - GETQTNODES(graph)[0].massCenter.x;
+    GETNODES(graph)[node].pos.y +=gc->bounds.height/2 - GETQTNODES(graph)[0].massCenter.y;
 }
 
 void Bound(GraphConfig *gc,nodeID node){

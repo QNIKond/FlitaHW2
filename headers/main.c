@@ -8,8 +8,6 @@
 #include "GUI/Keybinds.h"
 #include "System/FileManager.h"
 
-#include "../sfd.h"
-
 #include "Simulation/GraphSolver.h"
 
 #include "../robotofont.h"
@@ -29,6 +27,8 @@ int main()
     SetWindowState(FLAG_WINDOW_RESIZABLE);
     GuiSetStyle(0,2,0x000000ff);
     GuiSetStyle(0, 16, 0x00000012);
+
+
     Font fnt = LoadFont_Robotofont();
     //Font fnt = LoadFontEx("Fonts/Roboto-Regular.ttf",18,0,0);
     GuiSetFont(fnt);
@@ -38,6 +38,7 @@ int main()
     curGraph = GetDefaultGraph();
     SetNewGraphToSolve(curGraph);
     InitializeGraphConfig(&gc);
+
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
@@ -49,10 +50,7 @@ int main()
     return 0;
 }
 
-
-char* msg = "asdfasdf";
 int focus = 1;
-const char *filename = 0;
 void UpdateDrawFrame(void)
 {
     BeginDrawing();
@@ -63,9 +61,11 @@ void UpdateDrawFrame(void)
         if(g)
             curGraph = g;
     }
+    if(IsKeyPressed(KEY_Q))
+        ShuffleNodes(curGraph,gc.bounds);
     SolveGraph(&gc);
     UpdateDrawGraphWindow(curGraph,&gc, &focus);
-    UpdateDrawInfoWindow(&focus);
+    UpdateDrawInfoWindow(&focus,curGraph, &gc);
     focus = 1;
     UpdateDrawToolBar(&focus);
     CheckKeyBinds(&gc);

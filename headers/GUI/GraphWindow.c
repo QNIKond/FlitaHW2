@@ -169,6 +169,20 @@ void EditEdges(Graph *graph)
     }
 }
 
+void MoveVertices(Graph *graph){
+    static char isDragging = 0;
+    static nodeID dragNode = -1;
+    if(IsMouseButtonDown(0)){
+        if(dragNode == -1)
+            dragNode = FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom);
+        else
+            GETNODES(graph)[dragNode].pos = GetRel(GetMousePosition());
+    }
+    else{
+        dragNode = -1;
+    }
+}
+
 void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc,int* focus)
 {
     Rectangle bounds = {0,TBHEIGHT,GetScreenWidth()-IWWIDTH,GetScreenHeight()-TBHEIGHT};
@@ -185,6 +199,7 @@ void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc,int* focus)
             UpdateCameraPosition();
             break;
         case GEMMoveVertices:
+            MoveVertices(graph);
             break;
         case GEMEditVertices:
             EditVertices(graph);
