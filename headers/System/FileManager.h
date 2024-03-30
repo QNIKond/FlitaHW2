@@ -4,4 +4,8 @@
 
 Graph* GetDefaultGraph();
 
-Graph* OpenAdjacencyGraph(GraphConfig *gc);
+Graph *OpenMtx(GraphConfig *gc);
+
+Graph *OpenEdgesList(GraphConfig *gc);
+
+Graph* OpenAdjacencyMatrix(GraphConfig *gc);

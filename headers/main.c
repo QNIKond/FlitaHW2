@@ -57,7 +57,7 @@ void UpdateDrawFrame(void)
     ClearBackground(DARKGRAY);
 
     if(IsKeyPressed(KEY_Y)){
-        Graph* g = OpenAdjacencyGraph(&gc);
+        Graph* g = OpenMtx(&gc);
         if(g)
             curGraph = g;
     }
