@@ -2,10 +2,8 @@
 #include "../Simulation/Graph.h"
 #include "../Simulation/GraphData.h"
 
-Graph* GetDefaultGraph();
+Graph *OpenMtx(Graph *graph, GraphConfig *gc);
 
-Graph *OpenMtx(GraphConfig *gc);
+Graph *OpenEdgesList(Graph *graph, GraphConfig *gc);
 
-Graph *OpenEdgesList(GraphConfig *gc);
-
-Graph* OpenAdjacencyMatrix(GraphConfig *gc);
+Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc);

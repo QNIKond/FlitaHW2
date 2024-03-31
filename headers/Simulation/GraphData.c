@@ -13,4 +13,5 @@ void InitializeGraphConfig(GraphConfig *gc){
     gc->C = 0.2f;
     gc->superNodeRatio = 1.2f;
     gc->maxTreeDepth = 8;
+    gc->useQTOptimization = 1;
 }

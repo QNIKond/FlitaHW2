@@ -35,8 +35,6 @@ add_executable(${PROJECT_NAME} headers/main.c
         headers/GameCycle.h
         headers/GUI/GraphWindow.c
         headers/GUI/GraphWindow.h
-        headers/SafeMemoryAllocator.c
-        headers/SafeMemoryAllocator.h
         headers/GUI/ToolBar.c
         headers/GUI/ToolBar.h
         headers/GUI/Layout.h
@@ -57,6 +55,8 @@ add_executable(${PROJECT_NAME} headers/main.c
         sfd.c
         headers/System/FileManager.c
         headers/System/FileManager.h
+        headers/Simulation/GraphCoarser.c
+        headers/Simulation/GraphCoarser.h
 )
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)

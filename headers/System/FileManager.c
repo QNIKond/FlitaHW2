@@ -4,13 +4,6 @@
 #include "raylib.h"
 #include "malloc.h"
 
-Graph loadedGraph;
-
-Graph* GetDefaultGraph(){
-    InitializeGraph(&loadedGraph);
-    return &loadedGraph;
-}
-
 FILE* GetFile(const char* mode){
     sfd_Options opt = {
             .title        = "Open graph",
@@ -19,64 +12,68 @@ FILE* GetFile(const char* mode){
     const char* fileName = sfd_open_dialog(&opt);
     if(!fileName)
         return 0;
+    SetWindowTitle(fileName);
     FILE *fd = fopen(fileName,"r");
     return fd;
 }
 
-Graph *OpenMtx(GraphConfig *gc){
+Graph *OpenMtx(Graph *graph, GraphConfig *gc){
     FILE *fd = GetFile("r");
     if(!fd)
         return 0;
-    ResetGraph(&loadedGraph);
+    ResetGraph(graph);
     char buffer[1000];
-    fgets(buffer,1000,fd);
-    fgets(buffer,1000,fd);
-    const char** row = TextSplit(buffer,' ',0);
+    int count = 0;
+    const char **row;
+    do {
+        fgets(buffer, 1000, fd);
+        row = TextSplit(buffer, ' ', &count);
+    }while(count != 3);
     int nodeCount = TextToInteger(row[0]);
     int edgeCount = TextToInteger(row[2]);
 
     for(int i = 0; i < nodeCount; ++i)
-        CreateNode(&loadedGraph,i);
+        CreateNode(graph, i);
     for(int i = 0; i < edgeCount; ++i){
         fgets(buffer,1000,fd);
         row = TextSplit(buffer,' ',0);
         int lval = TextToInteger(row[0])-1;
         int rval = TextToInteger(row[1])-1;
-        ConnectNodes(&loadedGraph,lval,rval);
+        CreateNodeConnection(graph, lval, rval);
     }
     fclose(fd);
     gc->verticesCount = nodeCount;
     gc->edgesCount = edgeCount;
-    ShuffleNodes(&loadedGraph, gc->bounds);
-    return &loadedGraph;
+    ShuffleNodes(graph, gc->bounds);
+    return graph;
 }
 
-Graph *OpenEdgesList(GraphConfig *gc){
+Graph *OpenEdgesList(Graph *graph, GraphConfig *gc){
     FILE *fd = GetFile("r");
     if(!fd)
         return 0;
-    ResetGraph(&loadedGraph);
+    ResetGraph(graph);
     char buffer[1000];
 
     while(fgets(buffer,1000,fd)){
         const char** row = TextSplit(buffer,' ',0);
         int lval = TextToInteger(row[0]);
         int rval = TextToInteger(row[1]);
-        while(rval>=loadedGraph.nodes.filled)
-            CreateNode(&loadedGraph,loadedGraph.nodes.filled);
-        ConnectNodes(&loadedGraph,lval,rval);
+        while(rval >= graph->nodes.filled)
+            CreateNode(graph, graph->nodes.filled);
+        CreateNodeConnection(graph, lval, rval);
     }
     fclose(fd);
-    gc->verticesCount = loadedGraph.nodes.filled;
-    ShuffleNodes(&loadedGraph, gc->bounds);
-    return &loadedGraph;
+    gc->verticesCount = graph->nodes.filled;
+    ShuffleNodes(graph, gc->bounds);
+    return graph;
 }
 
-Graph* OpenAdjacencyMatrix(GraphConfig *gc){
+Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc){
     FILE *fd = GetFile("r");
     if(!fd)
         return 0;
-    ResetGraph(&loadedGraph);
+    ResetGraph(graph);
     char buffer[1000];
     fgets(buffer,1000,fd);
     int row = 0;
@@ -84,17 +81,17 @@ Graph* OpenAdjacencyMatrix(GraphConfig *gc){
     TextSplit(buffer,' ',&column);
     column -= 1;
     for(int i = 0; i < column; ++i)
-        CreateNode(&loadedGraph, i);
+        CreateNode(graph, i);
     do{
         const char ** adj = TextSplit(buffer,' ',0);
         for(int i = 0; i < row; ++i) {
             if(TextToInteger(adj[i]))
-                ConnectNodes(&loadedGraph, row, i);
+                CreateNodeConnection(graph, row, i);
         }
         ++row;
     } while(fgets(buffer,1000,fd));
     fclose(fd);
-    gc->verticesCount = loadedGraph.nodes.filled;
-    ShuffleNodes(&loadedGraph, gc->bounds);
-    return &loadedGraph;
+    gc->verticesCount = graph->nodes.filled;
+    ShuffleNodes(graph, gc->bounds);
+    return graph;
 }

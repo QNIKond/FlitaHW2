@@ -16,9 +16,8 @@ void ResizeArena(Arena *arena)
 {
     do{
         arena->blockSize *= 2;
-        arena->memBlock = realloc(arena->memBlock,arena->blockSize*arena->elementSize);
-
     }while(arena->filled >= arena->blockSize);
+    arena->memBlock = realloc(arena->memBlock,arena->blockSize*arena->elementSize);
 }
 
 void *Alloc(Arena *arena, int* id)

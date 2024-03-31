@@ -36,6 +36,9 @@ void InitializeInfoWindow()
     settings[2] = (Setting){"Edge resize constant", 0.00001, 1000, 0,"", 0};
     settings[3] = (Setting){"Repulsive force strength", 0.00001, 1000, 0,"", 0};
     settings[4] = (Setting){"Low heat", 0.00001, 1000, 0,"", 0};
+    settings[5] = (Setting){"Super node ratio", 0.00001, 1000, 0,"", 0};
+    settings[6] = (Setting){"Max tree depth", 1, 100, 1,"", 0};
+    settings[7] = (Setting){"Use qt optimization", 0, 1, 1,"", 0};
 }
 
 void DrawInfoLine(Rectangle *bounds, const char* text, double value,int acc){
@@ -52,7 +55,9 @@ void UpdateDrawInfoPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     DrawInfoLine(&textBounds,"Filled nodes count:    ", GETQTNODES(graph)[0].mass,0);
     DrawInfoLine(&textBounds,"Nodes:    ",gc->verticesCount,0);
     DrawInfoLine(&textBounds,"Edges:    ",gc->edgesCount,0);
-    DrawInfoLine(&textBounds,"Desired length:    ",gc->K,0);
+    DrawInfoLine(&textBounds,"Desired length:    ",gc->K,3);
+    DrawInfoLine(&textBounds,"Edge:    ", GETEDGES(graph)[0].state,0);
+
 }
 
 void UpdateDrawSettingsLine(Rectangle *bounds,Setting *setting,void *value){
@@ -89,6 +94,9 @@ void UpdateDrawSettingsPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     UpdateDrawSettingsLine(&textBounds,&settings[2],&gc->edgeResizeConst);
     UpdateDrawSettingsLine(&textBounds,&settings[3],&gc->C);
     UpdateDrawSettingsLine(&textBounds,&settings[4],&gc->heat);
+    UpdateDrawSettingsLine(&textBounds,&settings[5],&gc->superNodeRatio);
+    UpdateDrawSettingsLine(&textBounds,&settings[6],&gc->maxTreeDepth);
+    UpdateDrawSettingsLine(&textBounds,&settings[7],&gc->useQTOptimization);
 }
 
 void UpdateDrawHelpPanel(Rectangle rect)

@@ -1,7 +1,6 @@
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "../raygui.h"
-#include "SafeMemoryAllocator.h"
 #include "GUI/ToolBar.h"
 #include "GUI/InfoWindow.h"
 #include "GUI/GraphWindow.h"
@@ -9,12 +8,15 @@
 #include "System/FileManager.h"
 
 #include "Simulation/GraphSolver.h"
+#include "Simulation/GraphCoarser.h"
 
 #include "../robotofont.h"
 
 int screenWidth = 1200;
 int screenHeight = 700;
 
+Arena graphs;
+Graph graph;
 Graph *curGraph;
 GraphConfig gc;
 
@@ -35,18 +37,15 @@ int main()
     //ExportFontAsCode(fnt,"../robotofont.h");
     InitializeToolBar();
     InitializeInfoWindow();
-    curGraph = GetDefaultGraph();
-    SetNewGraphToSolve(curGraph);
+    InitializeGraph(&graph);
+    curGraph = &graph;
     InitializeGraphConfig(&gc);
-
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
-
     CloseWindow();
-    DestroyGraph(curGraph);
-    FreeAll();
+    DestroyGraph(&graph);
     return 0;
 }
 
@@ -57,13 +56,13 @@ void UpdateDrawFrame(void)
     ClearBackground(DARKGRAY);
 
     if(IsKeyPressed(KEY_Y)){
-        Graph* g = OpenMtx(&gc);
-        if(g)
-            curGraph = g;
+        CoarseGraph(curGraph);
+        curGraph = curGraph->coarserGraph;
+        ShuffleNodes(curGraph,gc.bounds);
     }
     if(IsKeyPressed(KEY_Q))
         ShuffleNodes(curGraph,gc.bounds);
-    SolveGraph(&gc);
+    SolveGraph(curGraph, &gc);
     UpdateDrawGraphWindow(curGraph,&gc, &focus);
     UpdateDrawInfoWindow(&focus,curGraph, &gc);
     focus = 1;

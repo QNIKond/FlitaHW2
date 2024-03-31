@@ -7,6 +7,8 @@ void InitializeGraph(Graph* graph)
     CreateArena(&graph->nodes,sizeof(GraphNode));
     CreateArena(&graph->edges,sizeof(GraphEdge));
     CreateArena(&graph->qtree,sizeof(QuadTree));
+    graph->finerGraph = graph;
+    graph->coarserGraph = graph;
 }
 
 edgeID CreateEdges(Graph *graph, nodeID node,nodeID* neighbours, int neighboursCount);
@@ -14,12 +16,13 @@ edgeID CreateEdges(Graph *graph, nodeID node,nodeID* neighbours, int neighboursC
 void PlaceNewNode(Graph *graph, Vector2 pos)
 {
     int id = -1;
-    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST,pos,1};
+    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST,pos,1,-1};
 }
 
-void CreateNode(Graph *graph, nodeID id)
+int CreateNode(Graph *graph, nodeID id)
 {
-    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST, {0,0},1};
+    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST, {0,0},1,-1};
+    return id;
 }
 
 void DeleteNode(Graph* graph, nodeID node)
@@ -33,11 +36,11 @@ void GetLastEdge(Graph *graph, edgeID edge)
 
 }
 
-void AddEdge(Graph* graph, nodeID source, nodeID dest)
+edgeID AddEdge(Graph* graph, nodeID source, nodeID dest)
 {
     edgeID newEdge = -1;
     edgeID curEdge = GETNODES(graph)[source].edges;
-    *(GraphEdge*)Alloc(&graph->edges, &newEdge) = (GraphEdge){dest, EOEDGELIST, 1};
+    *(GraphEdge*)Alloc(&graph->edges, &newEdge) = (GraphEdge){dest, EOEDGELIST, 1,1};
     if(curEdge == -1)
         GETNODES(graph)[source].edges = newEdge;
     else {
@@ -45,29 +48,31 @@ void AddEdge(Graph* graph, nodeID source, nodeID dest)
             curEdge = GETEDGES(graph)[curEdge].nextEdge;
         GETEDGES(graph)[curEdge].nextEdge = newEdge;
     }
-
+    return newEdge;
 }
 
-int SetEdge(Graph *graph, nodeID node1, nodeID node2, int state)
+edgeID GetEdge(Graph *graph, nodeID node1, nodeID node2)
 {
     edgeID curEdge = GETNODES(graph)[node1].edges;
     while (curEdge != EOEDGELIST) {
         if(GETEDGES(graph)[curEdge].node == node2)
-        {
-            GETEDGES(graph)[curEdge].state = state;
-            return 1;
-        }
+            return curEdge;
         curEdge = GETEDGES(graph)[curEdge].nextEdge;
     }
-    return 0;
+    return -1;
 }
 
-void ConnectNodes(Graph *graph, nodeID node1, nodeID node2)
+void CreateNodeConnection(Graph *graph, nodeID node1, nodeID node2)
 {
     if(node1 == node2)
         return;
-    if(SetEdge(graph, node1, node2,1)){
-        SetEdge(graph, node2, node1,1);
+    edgeID edge = GetEdge(graph, node1, node2);
+    if(edge != -1){
+        GETEDGES(graph)[edge].state |= GS_EXISTS;
+        GETEDGES(graph)[edge].weight = 1;
+        edge = GetEdge(graph, node2, node1);
+        GETEDGES(graph)[edge].state |= GS_EXISTS;
+        GETEDGES(graph)[edge].weight = 1;
     }
     else {
         AddEdge(graph, node1, node2);
@@ -75,11 +80,30 @@ void ConnectNodes(Graph *graph, nodeID node1, nodeID node2)
     }
 }
 
+void AddWeight(Graph *graph, nodeID node1, nodeID node2, int weight){
+    if(node1 == node2)
+        return;
+    edgeID edge1 = GetEdge(graph, node1, node2);
+    edgeID edge2;
+    if(edge1 == -1){
+        edge1 = AddEdge(graph, node1, node2);
+        edge2 = AddEdge(graph, node2, node1);
+    }
+    else {
+        edge2 = GetEdge(graph, node2, node1);
+        GETEDGES(graph)[edge1].weight += weight;
+        GETEDGES(graph)[edge2].weight += weight;
+    }
+}
+
 void DisconnectNodes(Graph *graph, nodeID node1, nodeID node2){
     if(node1 == node2)
         return;
-    if(SetEdge(graph, node1, node2,0)){
-        SetEdge(graph, node2, node1,0);
+    edgeID edge = GetEdge(graph, node1, node2);
+    if(edge != -1){
+        GETEDGES(graph)[edge].state = 0;
+        edge = GetEdge(graph, node2, node1);
+        GETEDGES(graph)[edge].state = 0;
     }
 }
 
@@ -101,15 +125,38 @@ void ShuffleNodes(Graph *graph,Rectangle bounds){
                                        bounds.y + (float)(rand()%(int)bounds.height)};
 }
 
-void ResetGraph(Graph *graph){
-    ResetArena(&graph->nodes);
-    ResetArena(&graph->edges);
-    ResetArena(&graph->qtree);
-}
 
-void DestroyGraph(Graph *graph)
+void RecursevlyDestroyGraphs(Graph *graph)
 {
     FreeArena(&graph->nodes);
     FreeArena(&graph->edges);
     FreeArena(&graph->qtree);
+    if(graph->coarserGraph) {
+        RecursevlyDestroyGraphs(graph->coarserGraph);
+        free(graph->coarserGraph);
+    }
+}
+
+void DestroySubgraphs(Graph *graph)
+{
+    if(graph->coarserGraph == graph)
+        return;
+    graph->finerGraph->coarserGraph = 0;
+    RecursevlyDestroyGraphs(graph->coarserGraph);
+    free(graph->coarserGraph);
+    graph->finerGraph = graph;
+    graph->coarserGraph = graph;
+}
+
+void ResetGraph(Graph *graph){
+    ResetArena(&graph->nodes);
+    ResetArena(&graph->edges);
+    ResetArena(&graph->qtree);
+    DestroySubgraphs(graph);
+}
+
+void DestroyGraph(Graph *graph)
+{
+    graph->finerGraph->coarserGraph = 0;
+    RecursevlyDestroyGraphs(graph);
 }

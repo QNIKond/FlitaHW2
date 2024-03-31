@@ -66,10 +66,17 @@ void DrawGraph(Graph* graph)
         curEdge = GETNODES(graph)[i].edges;
         while(curEdge != EOEDGELIST)
         {
+
             if((GETEDGES(graph)[curEdge].node>i)&&(GETEDGES(graph)[curEdge].state&1)&&
-                    (GETNODES(graph)[GETEDGES(graph)[curEdge].node].state&1))
-                DrawLineV(GetAbs(GETNODES(graph)[i].pos),
-                          GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
+                    (GETNODES(graph)[GETEDGES(graph)[curEdge].node].state&1)) {
+                if(GETEDGES(graph)[curEdge].weight==1)
+                    DrawLineV(GetAbs(GETNODES(graph)[i].pos),
+                              GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
+                else
+                    DrawLineEx(GetAbs(GETNODES(graph)[i].pos),
+                            GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
+                            GETEDGES(graph)[curEdge].weight, BLACK);
+            }
             curEdge = GETEDGES(graph)[curEdge].nextEdge;
         }
     }
@@ -144,7 +151,7 @@ void EditEdges(Graph *graph)
             nodeID dragEnd = FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom);
             if(dragEnd != -1) {
                 if(IsMouseButtonDown(0))
-                    ConnectNodes(graph, dragNext, dragEnd);
+                    CreateNodeConnection(graph, dragNext, dragEnd);
                 else {
                     if((dragStart == dragEnd) && (dragStart != -1)) {
                         DeleteNode(graph, dragNext);
