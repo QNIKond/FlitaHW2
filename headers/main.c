@@ -56,9 +56,13 @@ void UpdateDrawFrame(void)
     ClearBackground(DARKGRAY);
 
     if(IsKeyPressed(KEY_Y)){
-        CoarseGraph(curGraph);
+        CoarseMIVS(curGraph);
         curGraph = curGraph->coarserGraph;
         ShuffleNodes(curGraph,gc.bounds);
+    }
+    if(IsKeyPressed(KEY_M)){
+        if(OpenMtx(&graph,&gc))
+            curGraph = &graph;
     }
     if(IsKeyPressed(KEY_Q))
         ShuffleNodes(curGraph,gc.bounds);

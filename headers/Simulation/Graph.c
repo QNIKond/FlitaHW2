@@ -16,12 +16,12 @@ edgeID CreateEdges(Graph *graph, nodeID node,nodeID* neighbours, int neighboursC
 void PlaceNewNode(Graph *graph, Vector2 pos)
 {
     int id = -1;
-    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST,pos,1,-1};
+    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST,pos,1,-1,1};
 }
 
 int CreateNode(Graph *graph, nodeID id)
 {
-    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST, {0,0},1,-1};
+    *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST, {0,0},1,-1,1};
     return id;
 }
 
@@ -29,11 +29,6 @@ void DeleteNode(Graph* graph, nodeID node)
 {
     if(node >= 0)
         GETNODES(graph)[node].state = 0;
-}
-
-void GetLastEdge(Graph *graph, edgeID edge)
-{
-
 }
 
 edgeID AddEdge(Graph* graph, nodeID source, nodeID dest)

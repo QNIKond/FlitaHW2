@@ -56,12 +56,13 @@ void ApplyForces(Graph *graph,GraphConfig* gc, nodeID node){
         }
     edgeID edge = GETNODES(graph)[node].edges;
     while(edge != EOEDGELIST){
+        int weight = GETEDGES(graph)[edge].weight;
         if(GETEDGES(graph)[edge].state && GETNODES(graph)[GETEDGES(graph)[edge].node].state) {
             srcPos = GETNODES(graph)[GETEDGES(graph)[edge].node].pos;
             dist = GetDist(nodePos, srcPos);
             if (dist > 0) {
-                force.x += dist / gc->K * (srcPos.x - nodePos.x);
-                force.y += dist / gc->K * (srcPos.y - nodePos.y);
+                force.x += weight * dist / gc->K * (srcPos.x - nodePos.x);
+                force.y += weight * dist / gc->K * (srcPos.y - nodePos.y);
             }
         }
         edge = GETEDGES(graph)[edge].nextEdge;

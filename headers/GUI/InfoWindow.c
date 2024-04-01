@@ -39,6 +39,8 @@ void InitializeInfoWindow()
     settings[5] = (Setting){"Super node ratio", 0.00001, 1000, 0,"", 0};
     settings[6] = (Setting){"Max tree depth", 1, 100, 1,"", 0};
     settings[7] = (Setting){"Use qt optimization", 0, 1, 1,"", 0};
+    settings[8] = (Setting){"Show dots", 0, 1, 1,"", 0};
+    settings[9] = (Setting){"Show weights", 0, 1, 1,"", 0};
 }
 
 void DrawInfoLine(Rectangle *bounds, const char* text, double value,int acc){
@@ -97,6 +99,8 @@ void UpdateDrawSettingsPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     UpdateDrawSettingsLine(&textBounds,&settings[5],&gc->superNodeRatio);
     UpdateDrawSettingsLine(&textBounds,&settings[6],&gc->maxTreeDepth);
     UpdateDrawSettingsLine(&textBounds,&settings[7],&gc->useQTOptimization);
+    UpdateDrawSettingsLine(&textBounds,&settings[8],&gc->showDots);
+    UpdateDrawSettingsLine(&textBounds,&settings[9],&gc->showEdgeWeights);
 }
 
 void UpdateDrawHelpPanel(Rectangle rect)

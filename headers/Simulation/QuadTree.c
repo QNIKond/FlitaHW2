@@ -52,7 +52,7 @@ void CalculateMassCenters(Graph *graph, qtID node){
     Vector2 center = {0,0};
     int mass = 0;
     if(GETQTNODES(graph)[node].isLeaf){
-        mass = 1;
+        mass = GETNODES(graph)[GETQTNODES(graph)[node].node].weight;
         center = GETNODES(graph)[GETQTNODES(graph)[node].node].pos;
     }
     qtID childNode;

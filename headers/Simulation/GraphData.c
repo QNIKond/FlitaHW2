@@ -8,10 +8,12 @@ void InitializeGraphConfig(GraphConfig *gc){
     gc->verticesCount = 0;
     gc->edgesCount = 0;
     gc->K = 0;
-    gc->heat = 1;
-    gc->edgeResizeConst = 0.6f;
+    gc->heat = 10;
+    gc->edgeResizeConst = 0.2f;
     gc->C = 0.2f;
     gc->superNodeRatio = 1.2f;
     gc->maxTreeDepth = 8;
     gc->useQTOptimization = 1;
+    gc->showDots = 1;
+    gc->showEdgeWeights = 1;
 }

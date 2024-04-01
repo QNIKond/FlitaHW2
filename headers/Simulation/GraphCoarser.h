@@ -1,4 +1,6 @@
 #pragma once
 #include "Graph.h"
 
-void CoarseGraph(Graph *graph);
+void CoarseEC(Graph *graph);
+
+void CoarseMIVS(Graph *graph);

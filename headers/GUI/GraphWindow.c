@@ -54,7 +54,7 @@ void DrawTree(Graph* graph, qtID leaf,Rectangle box)
     }
 }
 
-void DrawGraph(Graph* graph)
+void DrawGraph(Graph* graph, GraphConfig *gc)
 {
     if(!graph)
         return;
@@ -62,20 +62,31 @@ void DrawGraph(Graph* graph)
     for (int i = 0; i < graph->nodes.filled; ++i) {
         if(!GETNODES(graph)[i].state)
             continue;
-        DrawCircleV(GetAbs(GETNODES(graph)[i].pos), DOTRADIUS, BLACK);
+        if(gc->showDots) {
+            int weight = (GETNODES(graph)[i].weight-1) * 40;
+            if(weight > 255)
+                weight = 255;
+            DrawCircleV(GetAbs(GETNODES(graph)[i].pos), DOTRADIUS, (Color){weight,0,0,255});
+        }
         curEdge = GETNODES(graph)[i].edges;
         while(curEdge != EOEDGELIST)
         {
 
             if((GETEDGES(graph)[curEdge].node>i)&&(GETEDGES(graph)[curEdge].state&1)&&
                     (GETNODES(graph)[GETEDGES(graph)[curEdge].node].state&1)) {
-                if(GETEDGES(graph)[curEdge].weight==1)
+                int weight = (GETEDGES(graph)[curEdge].weight-1) * 40;
+                if(weight > 255)
+                    weight = 255;
+                DrawLineV(GetAbs(GETNODES(graph)[i].pos),
+                          GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
+                          (Color){weight,0,0,255});
+                /*if((!gc->showEdgeWeights) || (GETEDGES(graph)[curEdge].weight == 1))
                     DrawLineV(GetAbs(GETNODES(graph)[i].pos),
                               GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
                 else
                     DrawLineEx(GetAbs(GETNODES(graph)[i].pos),
                             GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
-                            GETEDGES(graph)[curEdge].weight, BLACK);
+                            GETEDGES(graph)[curEdge].weight, BLACK);*/
             }
             curEdge = GETEDGES(graph)[curEdge].nextEdge;
         }
@@ -196,7 +207,7 @@ void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc,int* focus)
 {
     Rectangle bounds = {0,TBHEIGHT,GetScreenWidth()-IWWIDTH,GetScreenHeight()-TBHEIGHT};
     DrawRectangleRec(GetAbsRect(gc->bounds), RAYWHITE);
-    DrawGraph(graph);
+    DrawGraph(graph, gc);
     if(IsKeyDown(KEY_O) || IsKeyDown(KEY_T) )
         DrawTree(graph,0,gc->bounds);
     if(!CheckCollisionPointRec(GetMousePosition(),bounds))

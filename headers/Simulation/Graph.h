@@ -17,6 +17,7 @@ typedef struct GRAPHNODE
     Vector2 pos;
     unsigned int state;
     nodeID parent;
+    int weight;
 }GraphNode;
 
 #define EOEDGELIST -1

@@ -21,6 +21,8 @@ typedef struct GRAPHCONFIG{
     int maxTreeDepth;
 
     int useQTOptimization;
+    int showDots;
+    int showEdgeWeights;
 }GraphConfig;
 
 void InitializeGraphConfig(GraphConfig *gc);
