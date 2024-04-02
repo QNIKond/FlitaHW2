@@ -7,3 +7,5 @@ Graph *OpenMtx(Graph *graph, GraphConfig *gc);
 Graph *OpenEdgesList(Graph *graph, GraphConfig *gc);
 
 Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc);
+
+void DrawToImage(Graph *graph, GraphConfig *gc);

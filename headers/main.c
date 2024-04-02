@@ -40,6 +40,7 @@ int main()
     InitializeGraph(&graph);
     curGraph = &graph;
     InitializeGraphConfig(&gc);
+
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
@@ -81,6 +82,8 @@ void UpdateDrawFrame(void)
     }
     if(IsKeyPressed(KEY_Q))
         ShuffleNodes(curGraph,gc.bounds);
+    if(IsKeyPressed(KEY_J))
+        DrawToImage(curGraph,&gc);
     SolveGraph(curGraph, &gc);
     UpdateDrawGraphWindow(curGraph,&gc, &focus);
     UpdateDrawInfoWindow(&focus,curGraph, &gc);

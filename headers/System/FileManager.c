@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "raylib.h"
 #include "malloc.h"
+#include "../GUI/Layout.h"
 
 FILE* GetFile(const char* mode){
     sfd_Options opt = {
@@ -94,4 +95,51 @@ Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc){
     gc->verticesCount = graph->nodes.filled;
     ShuffleNodes(graph, gc->bounds);
     return graph;
+}
+
+void DrawToImage(Graph *graph, GraphConfig *gc){
+    Image img = GenImageColor(gc->bounds.width,gc->bounds.height,RAYWHITE);
+
+    edgeID curEdge;
+    for (int i = 0; i < graph->nodes.filled; ++i) {
+        if(!GETNODES(graph)[i].state)
+            continue;
+        if(gc->showDots) {
+            int weight = (GETNODES(graph)[i].weight-1) * 40;
+            if(weight > 255)
+                weight = 255;
+            ImageDrawCircleV(&img,GETNODES(graph)[i].pos, DOTRADIUS, (Color){weight,0,0,255});
+        }
+        curEdge = GETNODES(graph)[i].edges;
+        while(curEdge != EOEDGELIST)
+        {
+
+            if((GETEDGES(graph)[curEdge].node>i)&&(GETEDGES(graph)[curEdge].state&1)&&
+               (GETNODES(graph)[GETEDGES(graph)[curEdge].node].state&1)) {
+                int weight = (GETEDGES(graph)[curEdge].weight-1) * 40;
+                if(weight > 255)
+                    weight = 255;
+                ImageDrawLineV(&img,GETNODES(graph)[i].pos,
+                          GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos,
+                          (Color){weight,0,0,255});
+                /*if((!gc->showEdgeWeights) || (GETEDGES(graph)[curEdge].weight == 1))
+                    DrawLineV(GetAbs(GETNODES(graph)[i].pos),
+                              GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
+                else
+                    DrawLineEx(GetAbs(GETNODES(graph)[i].pos),
+                            GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
+                            GETEDGES(graph)[curEdge].weight, BLACK);*/
+            }
+            curEdge = GETEDGES(graph)[curEdge].nextEdge;
+        }
+    }
+    sfd_Options opt = {
+            .title        = "Save graph image",
+            .filter       = "*.png"
+    };
+    const char* fileName = sfd_save_dialog(&opt);
+    const char* t = TextJoin((const char*[]){fileName,".png"},2,"");
+    if(!fileName)
+        return;
+    ExportImage(img,t);
 }
