@@ -85,10 +85,16 @@ Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc){
         CreateNode(graph, i);
     do{
         const char ** adj = TextSplit(buffer,' ',0);
+        int t;
         for(int i = 0; i < row; ++i) {
-            if(TextToInteger(adj[i]))
-                CreateNodeConnection(graph, row, i);
+            t = TextToInteger(adj[i]);
+            if(t) {
+                AddWeight(graph, row, i, t);
+            }
         }
+        t = TextToInteger(adj[row]);
+        if(t)
+            GETNODES(graph)[row].weight += 1;
         ++row;
     } while(fgets(buffer,1000,fd));
     fclose(fd);

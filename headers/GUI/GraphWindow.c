@@ -62,12 +62,7 @@ void DrawGraph(Graph* graph, GraphConfig *gc)
     for (int i = 0; i < graph->nodes.filled; ++i) {
         if(!GETNODES(graph)[i].state)
             continue;
-        if(gc->showDots) {
-            int weight = (GETNODES(graph)[i].weight-1) * 40;
-            if(weight > 255)
-                weight = 255;
-            DrawCircleV(GetAbs(GETNODES(graph)[i].pos), DOTRADIUS, (Color){weight,0,0,255});
-        }
+
         curEdge = GETNODES(graph)[i].edges;
         while(curEdge != EOEDGELIST)
         {
@@ -77,18 +72,24 @@ void DrawGraph(Graph* graph, GraphConfig *gc)
                 int weight = (GETEDGES(graph)[curEdge].weight-1) * 40;
                 if(weight > 255)
                     weight = 255;
-                DrawLineV(GetAbs(GETNODES(graph)[i].pos),
+                /*DrawLineV(GetAbs(GETNODES(graph)[i].pos),
                           GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
-                          (Color){weight,0,0,255});
-                /*if((!gc->showEdgeWeights) || (GETEDGES(graph)[curEdge].weight == 1))
+                          (Color){weight,0,0,255});*/
+                if((!gc->showEdgeWeights) || (GETEDGES(graph)[curEdge].weight == 1))
                     DrawLineV(GetAbs(GETNODES(graph)[i].pos),
                               GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
                 else
                     DrawLineEx(GetAbs(GETNODES(graph)[i].pos),
                             GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
-                            GETEDGES(graph)[curEdge].weight, BLACK);*/
+                            GETEDGES(graph)[curEdge].weight, BLACK);
             }
             curEdge = GETEDGES(graph)[curEdge].nextEdge;
+        }
+        if(gc->showDots) {
+            int weight = (GETNODES(graph)[i].weight-1) * 200;
+            if(weight > 255)
+                weight = 255;
+            DrawCircleV(GetAbs(GETNODES(graph)[i].pos), DOTRADIUS, (Color){weight,0,0,255});
         }
     }
 }

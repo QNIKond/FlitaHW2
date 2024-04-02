@@ -7,6 +7,7 @@ struct GRAPHEDGE;
 typedef int nodeID;
 typedef int edgeID;
 
+//#define GS_CYCLE 8
 #define GS_MIS 4
 #define GS_VISITED 2
 #define GS_EXISTS 1

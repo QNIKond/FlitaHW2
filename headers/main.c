@@ -88,7 +88,7 @@ void UpdateDrawFrame(void)
     UpdateDrawGraphWindow(curGraph,&gc, &focus);
     UpdateDrawInfoWindow(&focus,curGraph, &gc);
     focus = 1;
-    UpdateDrawToolBar(&focus);
+    UpdateDrawToolBar(&focus,&graph,&gc,&curGraph);
     CheckKeyBinds(&gc);
     EndDrawing();
 }

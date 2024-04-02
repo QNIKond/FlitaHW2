@@ -81,7 +81,9 @@ void AddWeight(Graph *graph, nodeID node1, nodeID node2, int weight){
     edgeID edge2;
     if(edge1 == -1){
         edge1 = AddEdge(graph, node1, node2);
+        GETEDGES(graph)[edge1].weight = weight;
         edge2 = AddEdge(graph, node2, node1);
+        GETEDGES(graph)[edge2].weight = weight;
     }
     else {
         edge2 = GetEdge(graph, node2, node1);
