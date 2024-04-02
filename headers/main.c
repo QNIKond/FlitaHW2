@@ -55,10 +55,25 @@ void UpdateDrawFrame(void)
     BeginDrawing();
     ClearBackground(DARKGRAY);
 
-    if(IsKeyPressed(KEY_Y)){
+    if(IsKeyPressed(KEY_A) && (curGraph->finerGraph)){
+        curGraph = curGraph->finerGraph;
+        RefineGraph(curGraph);
+        //ShuffleNodes(curGraph,gc.bounds);
+    }
+    if(IsKeyPressed(KEY_S)){
+        if(curGraph->finerGraph)
+            curGraph = curGraph->finerGraph;
+        //ShuffleNodes(curGraph,gc.bounds);
+    }
+    if(IsKeyPressed(KEY_D)){
+        CoarseEC(curGraph);
+        curGraph = curGraph->coarserGraph;
+        //ShuffleNodes(curGraph,gc.bounds);
+    }
+    if(IsKeyPressed(KEY_F)){
         CoarseMIVS(curGraph);
         curGraph = curGraph->coarserGraph;
-        ShuffleNodes(curGraph,gc.bounds);
+        //ShuffleNodes(curGraph,gc.bounds);
     }
     if(IsKeyPressed(KEY_M)){
         if(OpenMtx(&graph,&gc))

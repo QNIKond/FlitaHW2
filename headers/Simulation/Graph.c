@@ -7,16 +7,15 @@ void InitializeGraph(Graph* graph)
     CreateArena(&graph->nodes,sizeof(GraphNode));
     CreateArena(&graph->edges,sizeof(GraphEdge));
     CreateArena(&graph->qtree,sizeof(QuadTree));
-    graph->finerGraph = graph;
-    graph->coarserGraph = graph;
+    graph->finerGraph = 0;
+    graph->coarserGraph = 0;
 }
 
-edgeID CreateEdges(Graph *graph, nodeID node,nodeID* neighbours, int neighboursCount);
-
-void PlaceNewNode(Graph *graph, Vector2 pos)
+nodeID PlaceNewNode(Graph *graph, Vector2 pos)
 {
-    int id = -1;
+    nodeID id = -1;
     *(GraphNode*)Alloc(&graph->nodes,&id) = (GraphNode){EOEDGELIST,pos,1,-1,1};
+    return id;
 }
 
 int CreateNode(Graph *graph, nodeID id)
@@ -134,13 +133,11 @@ void RecursevlyDestroyGraphs(Graph *graph)
 
 void DestroySubgraphs(Graph *graph)
 {
-    if(graph->coarserGraph == graph)
+    if(graph->coarserGraph == 0)
         return;
-    graph->finerGraph->coarserGraph = 0;
     RecursevlyDestroyGraphs(graph->coarserGraph);
-    free(graph->coarserGraph);
-    graph->finerGraph = graph;
-    graph->coarserGraph = graph;
+    //graph->finerGraph = 0;
+    graph->coarserGraph = 0;
 }
 
 void ResetGraph(Graph *graph){
@@ -152,6 +149,5 @@ void ResetGraph(Graph *graph){
 
 void DestroyGraph(Graph *graph)
 {
-    graph->finerGraph->coarserGraph = 0;
     RecursevlyDestroyGraphs(graph);
 }

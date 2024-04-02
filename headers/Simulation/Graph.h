@@ -44,7 +44,7 @@ typedef struct GRAPH
 
 void InitializeGraph(Graph* graph);
 
-void PlaceNewNode(Graph *graph, Vector2 pos);
+nodeID PlaceNewNode(Graph *graph, Vector2 pos);
 
 int CreateNode(Graph *graph, nodeID id);
 
@@ -61,5 +61,7 @@ nodeID FindNodeByPosition(Graph *graph, Vector2 point, float radius);
 void ShuffleNodes(Graph *graph,Rectangle bounds);
 
 void ResetGraph(Graph *graph);
+
+void DestroySubgraphs(Graph *graph);
 
 void DestroyGraph(Graph *graph);
