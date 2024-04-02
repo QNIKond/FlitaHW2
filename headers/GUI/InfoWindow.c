@@ -105,8 +105,7 @@ void UpdateDrawSettingsPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
 
 void UpdateDrawHelpPanel(Rectangle rect)
 {
-    /*GuiTextBox(rect,"Press Alt+F4 to exit.",20,1);*/
-    DrawText("Press Alt+F4 to exit.",rect.x+10,rect.y+10,20,BLACK);
+
 }
 
 void UpdateDrawIWStatePanel(int *focus)

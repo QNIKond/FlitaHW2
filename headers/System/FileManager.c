@@ -37,7 +37,8 @@ Graph *OpenMtx(Graph *graph, GraphConfig *gc){
         CreateNode(graph, i);
     for(int i = 0; i < edgeCount; ++i){
         fgets(buffer,1000,fd);
-        row = TextSplit(buffer,' ',0);
+        int tscount;
+        row = TextSplit(buffer,' ',&tscount);
         int lval = TextToInteger(row[0])-1;
         int rval = TextToInteger(row[1])-1;
         CreateNodeConnection(graph, lval, rval);
@@ -57,7 +58,8 @@ Graph *OpenEdgesList(Graph *graph, GraphConfig *gc){
     char buffer[1000];
 
     while(fgets(buffer,1000,fd)){
-        const char** row = TextSplit(buffer,' ',0);
+        int tscount;
+        const char** row = TextSplit(buffer,' ',&tscount);
         int lval = TextToInteger(row[0]);
         int rval = TextToInteger(row[1]);
         while(rval >= graph->nodes.filled)
@@ -84,7 +86,8 @@ Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc){
     for(int i = 0; i < column; ++i)
         CreateNode(graph, i);
     do{
-        const char ** adj = TextSplit(buffer,' ',0);
+        int tscount;
+        const char ** adj = TextSplit(buffer,' ',&tscount);
         int t;
         for(int i = 0; i < row; ++i) {
             t = TextToInteger(adj[i]);
