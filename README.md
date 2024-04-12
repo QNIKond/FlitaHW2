@@ -1,5 +1,6 @@
 # Graph drawer
 This is an app, that allows you to create images of graphs.\
+![FlitaHW2_oajB1992qP](https://github.com/QNIKond/FlitaHW2/assets/57915280/990ad7d1-42bc-4478-98cb-e2519ea6a9cd)
 Entirely based on the article:\
 [Hu, Yifan. (2005). Efficient and High Quality Force-Directed Graph Drawing](http://yifanhu.net/PUB/graph_draw_small.pdf)
 
