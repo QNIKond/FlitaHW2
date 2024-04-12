@@ -54,6 +54,7 @@ void DrawInfoLine(Rectangle *bounds, const char* text, double value,int acc){
 
 void UpdateDrawInfoPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     Rectangle textBounds = {rect.x+10,rect.y+18,rect.width,18};
+    DrawInfoLine(&textBounds,"FPS:    ", GetFPS(),0);
     DrawInfoLine(&textBounds,"Filled nodes count:    ", GETQTNODES(graph)[0].mass,0);
     DrawInfoLine(&textBounds,"Nodes:    ",gc->verticesCount,0);
     DrawInfoLine(&textBounds,"Edges:    ",gc->edgesCount,0);
@@ -105,7 +106,44 @@ void UpdateDrawSettingsPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
 
 void UpdateDrawHelpPanel(Rectangle rect)
 {
-
+    Rectangle bounds = {rect.x+10,rect.y,rect.width,rect.height};
+    char text[] = "Controls:\n"
+                  "Mouse/keyboard:\n"
+                  "SPACE+LClick - Move canvas\n"
+                  "SPACE+Scroll - Resize canvas\n"
+                  "LClick - Add vertice\n"
+                  "RClick - Delete vertice\n"
+                  "LClick on vertice and drag to other vertice\n"
+                  "    to connect them\n"
+                  "Shift+LClick and drag - Move vertice\n"
+                  "\n"
+                  "Toolbar:\n"
+                  "RUN - start applying forces on vertices\n"
+                  "STOP - stop applying forces\n"
+                  "Shuffle - assign random position to each vertice\n"
+                  "Coarse EC - coarse graph by edge collapsing\n"
+                  "Coarce MIVS - coarse graph by extracting \n"
+                  "    maximal independant vertices set\n"
+                  "Refine - restore coarsened graph to the original \n"
+                  "    and asign new vertices position of ancestors\n"
+                  "Back - revert to original without applying changes\n"
+                  "File->open ... - open matrix\n"
+                  "File->save png - create and save image of canvas\n"
+                  "Hold T to see quad tree\n"
+                  "    "
+                  "If your graph doesn't fit on the canvas, adjust \n"
+                  "    the \"Edge resize constant\" setting.\n"
+                  "To increase speed, adjust the \"Low heat\" setting.\n"
+                  "\n"
+                  "File formats:\n"
+                  "adj mtx - adjacency matrix(integers arranged \n"
+                  "    as matrix splitted with space)\n"
+                  "edges list - list of edges(two integers in each line, \n"
+                  "    smaller number goes first)\n"
+                  "mtx - matrixMarket format";
+    GuiSetStyle(DEFAULT,TEXT_ALIGNMENT_VERTICAL,TEXT_ALIGN_TOP);
+    GuiLabel(bounds,text);
+    GuiSetStyle(DEFAULT,TEXT_ALIGNMENT_VERTICAL,TEXT_ALIGN_CENTER);
 }
 
 void UpdateDrawIWStatePanel(int *focus)

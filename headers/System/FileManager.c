@@ -5,13 +5,13 @@
 #include "malloc.h"
 #include "../GUI/Layout.h"
 
-FILE* GetFile(const char* mode){
+FILE* GetFile(const char* mode, const char* ext){
     sfd_Options opt = {
             .title        = "Open graph",
-            .filter       = "*.txt|*.mtx"
+            .filter       = TextJoin((const char*[]){"*",ext},2,"")
     };
     const char* fileName = sfd_open_dialog(&opt);
-    if(!fileName)
+    if(!fileName || !IsFileExtension(fileName,ext))
         return 0;
     SetWindowTitle(fileName);
     FILE *fd = fopen(fileName,"r");
@@ -19,7 +19,7 @@ FILE* GetFile(const char* mode){
 }
 
 Graph *OpenMtx(Graph *graph, GraphConfig *gc){
-    FILE *fd = GetFile("r");
+    FILE *fd = GetFile("r",".mtx");
     if(!fd)
         return 0;
     ResetGraph(graph);
@@ -51,7 +51,7 @@ Graph *OpenMtx(Graph *graph, GraphConfig *gc){
 }
 
 Graph *OpenEdgesList(Graph *graph, GraphConfig *gc){
-    FILE *fd = GetFile("r");
+    FILE *fd = GetFile("r",".txt");
     if(!fd)
         return 0;
     ResetGraph(graph);
@@ -73,7 +73,7 @@ Graph *OpenEdgesList(Graph *graph, GraphConfig *gc){
 }
 
 Graph* OpenAdjacencyMatrix(Graph *graph, GraphConfig *gc){
-    FILE *fd = GetFile("r");
+    FILE *fd = GetFile("r",".txt");
     if(!fd)
         return 0;
     ResetGraph(graph);

@@ -55,7 +55,6 @@ void UpdateDrawFrame(void)
 {
     BeginDrawing();
     ClearBackground(DARKGRAY);
-
     SolveGraph(curGraph, &gc);
     UpdateDrawGraphWindow(curGraph,&gc, &focus);
     UpdateDrawInfoWindow(&focus,curGraph, &gc);
