@@ -143,13 +143,13 @@ void UpdateCameraPosition(){
 
 void EditVertices(Graph* graph)
 {
-    if((IsMouseButtonPressed(0) || IsMouseButtonPressed(1)) && (FindNodeByPosition(graph,GetRel(GetMousePosition()),10/zoom) != -1))
-        graphEditMode = GEMEditEdges;
-    else if(IsMouseButtonPressed(0)) {
-        PlaceNewNode(graph, GetRel(GetMousePosition()));
+    if(IsMouseButtonPressed(0)||IsMouseButtonDown(1)) {
+        if(FindNodeByPosition(graph,GetRel(GetMousePosition()),10/zoom) != -1)
+            graphEditMode = GEMEditEdges;
+        else if(IsMouseButtonPressed(0))
+            PlaceNewNode(graph, GetRel(GetMousePosition()));
     }
-    else if(IsMouseButtonPressed(1))
-        DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom));
+        //DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom));
 }
 
 void EditEdges(Graph *graph)
@@ -157,20 +157,22 @@ void EditEdges(Graph *graph)
     static char isDragging = 0;
     static nodeID dragNext = -1;
     static nodeID dragStart = -1;
+    static int isDeleting = 0;
     if(IsMouseButtonDown(0)||IsMouseButtonDown(1)){
         if(isDragging) {
             DrawLineV(GetMousePosition(), GetAbs(GETNODES(graph)[dragNext].pos), BLUE);
             nodeID dragEnd = FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom);
-            if(dragEnd != -1) {
+            if((dragEnd != -1) && (dragEnd != dragNext)) {
                 if(IsMouseButtonDown(0))
                     CreateNodeConnection(graph, dragNext, dragEnd);
-                else {
-                    if((dragStart == dragEnd) && (dragStart != -1)) {
+                else{
+                    /*if((dragStart == dragEnd) && (dragStart != -1)) {
                         DeleteNode(graph, dragNext);
                         isDragging = 0;
-                    }
+                    }*/
 
                     DisconnectNodes(graph, dragNext, dragEnd);
+                    isDeleting = 0;
                 }
                 dragNext = dragEnd;
             }
@@ -180,10 +182,16 @@ void EditEdges(Graph *graph)
             dragStart = dragNext;
             if(dragNext != -1)
                 isDragging = 1;
+            if(IsMouseButtonDown(1))
+                isDeleting = 1;
+            else
+                isDeleting = 0;
         }
     }
     else if(isDragging){
         isDragging = 0;
+        if(isDeleting && (dragStart == dragNext) && (dragStart != -1))
+            DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom));
     }
     else{
         graphEditMode = GEMEditVertices;

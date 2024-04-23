@@ -23,10 +23,11 @@ GraphConfig gc;
 void UpdateDrawFrame(void);
 int main()
 {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Test1");
     SetTargetFPS(60);
     SetExitKey(-1);
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
+    //SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
     GuiSetStyle(0,2,0x000000ff);
     GuiSetStyle(0, 16, 0x00000012);
 
