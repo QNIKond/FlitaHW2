@@ -3,7 +3,7 @@
 void InitializeGraphConfig(GraphConfig *gc){
     gc->isRunning = 0;
     gc->globalIterations = 0;
-    gc->perCycleIterations = 1;
+    gc->perCycleIterations = 6;
     gc->bounds = (Rectangle){0,0,1200,1200};
     gc->verticesCount = 0;
     gc->edgesCount = 0;
@@ -16,4 +16,5 @@ void InitializeGraphConfig(GraphConfig *gc){
     gc->useQTOptimization = 1;
     gc->showDots = 1;
     gc->showEdgeWeights = 0;
+    gc->components = 0;
 }

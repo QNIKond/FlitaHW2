@@ -23,6 +23,7 @@ Graph *OpenMtx(Graph *graph, GraphConfig *gc){
     if(!fd)
         return 0;
     ResetGraph(graph);
+    gc->components = 0;
     char buffer[1000];
     int count = 0;
     const char **row;
@@ -33,15 +34,17 @@ Graph *OpenMtx(Graph *graph, GraphConfig *gc){
     int nodeCount = TextToInteger(row[0]);
     int edgeCount = TextToInteger(row[2]);
 
-    for(int i = 0; i < nodeCount; ++i)
+    for(int i = 0; i < nodeCount; ++i) {
         CreateNode(graph, i);
+        ++gc->components;
+    }
     for(int i = 0; i < edgeCount; ++i){
         fgets(buffer,1000,fd);
         int tscount;
         row = TextSplit(buffer,' ',&tscount);
         int lval = TextToInteger(row[0])-1;
         int rval = TextToInteger(row[1])-1;
-        CreateNodeConnection(graph, lval, rval);
+        gc->components += CreateNodeConnection(graph, lval, rval)-1;
     }
     fclose(fd);
     gc->verticesCount = nodeCount;

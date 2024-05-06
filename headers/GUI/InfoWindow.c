@@ -41,6 +41,7 @@ void InitializeInfoWindow()
     settings[7] = (Setting){"Use qt optimization", 0, 1, 1,"", 0};
     settings[8] = (Setting){"Show dots", 0, 1, 1,"", 0};
     settings[9] = (Setting){"Show weights", 0, 1, 1,"", 0};
+    settings[10] = (Setting){"Per frame iterations", 1, 1000, 1,"", 0};
 }
 
 void DrawInfoLine(Rectangle *bounds, const char* text, double value,int acc){
@@ -59,7 +60,7 @@ void UpdateDrawInfoPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     DrawInfoLine(&textBounds,"Nodes:    ",gc->verticesCount,0);
     DrawInfoLine(&textBounds,"Edges:    ",gc->edgesCount,0);
     DrawInfoLine(&textBounds,"Desired length:    ",gc->K,3);
-    DrawInfoLine(&textBounds,"Edge:    ", GETEDGES(graph)[0].state,0);
+    DrawInfoLine(&textBounds, "Components:    ", gc->components, 0);
 
 }
 
@@ -102,6 +103,7 @@ void UpdateDrawSettingsPanel(Rectangle rect, Graph *graph, GraphConfig *gc){
     UpdateDrawSettingsLine(&textBounds,&settings[7],&gc->useQTOptimization);
     UpdateDrawSettingsLine(&textBounds,&settings[8],&gc->showDots);
     UpdateDrawSettingsLine(&textBounds,&settings[9],&gc->showEdgeWeights);
+    UpdateDrawSettingsLine(&textBounds,&settings[10],&gc->perCycleIterations);
 }
 
 void UpdateDrawHelpPanel(Rectangle rect)

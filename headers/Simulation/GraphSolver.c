@@ -121,13 +121,7 @@ void CountNodesAndEdges(Graph *graph, GraphConfig *gc){
 void SolveGraph(Graph *graph, GraphConfig *gc)
 {
     CountNodesAndEdges(graph, gc);
-    if(!gc->isRunning)
-        return;
     BuildQuadTree(graph,gc->bounds,gc->maxTreeDepth);
     gc->K = gc->edgeResizeConst * sqrt(gc->bounds.width * gc->bounds.height / (gc->verticesCount + 1));
-
-    for(int i = 0; i < gc->globalIterations+gc->perCycleIterations; ++i)
-        Cycle(graph, gc);
-    gc->globalIterations = 0;
-    //if(IsKeyPressed(KEY_V))
+    Cycle(graph, gc);
 }

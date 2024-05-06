@@ -75,9 +75,17 @@ void DrawGraph(Graph* graph, GraphConfig *gc)
                 /*DrawLineV(GetAbs(GETNODES(graph)[i].pos),
                           GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
                           (Color){weight,0,0,255});*/
-                if((!gc->showEdgeWeights) || (GETEDGES(graph)[curEdge].weight == 1))
+                if((GETEDGES(graph)[curEdge].colValue > 0) && !IsKeyDown(KEY_Z))
+                    GETEDGES(graph)[curEdge].colValue -= 0.01;
+                if(GETEDGES(graph)[curEdge].colValue < 0)
+                    GETEDGES(graph)[curEdge].colValue = 0;
+                float th = GETEDGES(graph)[curEdge].colValue;
+                if(th)
+                    DrawLineEx(GetAbs(GETNODES(graph)[i].pos),
+                               GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),4*th*th+1, ColorFromHSV(GETEDGES(graph)[curEdge].hue,1,GETEDGES(graph)[curEdge].colValue));
+                else if((!gc->showEdgeWeights) || (GETEDGES(graph)[curEdge].weight == 1))
                     DrawLineV(GetAbs(GETNODES(graph)[i].pos),
-                              GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), BLACK);
+                              GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos), ColorFromHSV(GETEDGES(graph)[curEdge].hue,1,GETEDGES(graph)[curEdge].colValue));
                 else
                     DrawLineEx(GetAbs(GETNODES(graph)[i].pos),
                             GetAbs(GETNODES(graph)[GETEDGES(graph)[curEdge].node].pos),
@@ -141,18 +149,20 @@ void UpdateCameraPosition(){
         zoom /= 1.1;
 }
 
-void EditVertices(Graph* graph)
+void EditVertices(Graph* graph, GraphConfig *gc)
 {
     if(IsMouseButtonPressed(0)||IsMouseButtonDown(1)) {
         if(FindNodeByPosition(graph,GetRel(GetMousePosition()),10/zoom) != -1)
             graphEditMode = GEMEditEdges;
-        else if(IsMouseButtonPressed(0))
+        else if(IsMouseButtonPressed(0)) {
             PlaceNewNode(graph, GetRel(GetMousePosition()));
+            ++gc->components;
+        }
     }
         //DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom));
 }
 
-void EditEdges(Graph *graph)
+void EditEdges(Graph *graph,GraphConfig *gc)
 {
     static char isDragging = 0;
     static nodeID dragNext = -1;
@@ -164,14 +174,14 @@ void EditEdges(Graph *graph)
             nodeID dragEnd = FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom);
             if((dragEnd != -1) && (dragEnd != dragNext)) {
                 if(IsMouseButtonDown(0))
-                    CreateNodeConnection(graph, dragNext, dragEnd);
+                    gc->components += CreateNodeConnection(graph, dragNext, dragEnd) - 1;
                 else{
                     /*if((dragStart == dragEnd) && (dragStart != -1)) {
                         DeleteNode(graph, dragNext);
                         isDragging = 0;
                     }*/
 
-                    DisconnectNodes(graph, dragNext, dragEnd);
+                    gc->components -= DisconnectNodes(graph, dragNext, dragEnd) - 1;
                     isDeleting = 0;
                 }
                 dragNext = dragEnd;
@@ -190,8 +200,9 @@ void EditEdges(Graph *graph)
     }
     else if(isDragging){
         isDragging = 0;
-        if(isDeleting && (dragStart == dragNext) && (dragStart != -1))
-            DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()),10/zoom));
+        if(isDeleting && (dragStart == dragNext) && (dragStart != -1)) {
+            gc->components += DeleteNode(graph, FindNodeByPosition(graph, GetRel(GetMousePosition()), 10 / zoom));
+        }
     }
     else{
         graphEditMode = GEMEditVertices;
@@ -231,10 +242,10 @@ void UpdateDrawGraphWindow(Graph* graph,GraphConfig *gc,int* focus)
             MoveVertices(graph);
             break;
         case GEMEditVertices:
-            EditVertices(graph);
+            EditVertices(graph, gc);
             break;
         case GEMEditEdges:
-            EditEdges(graph);
+            EditEdges(graph,gc);
             break;
     }
 }

@@ -8,6 +8,7 @@ typedef int nodeID;
 typedef int edgeID;
 
 //#define GS_CYCLE 8
+#define GS_NEIGHBOUR 8
 #define GS_MIS 4
 #define GS_VISITED 2
 #define GS_EXISTS 1
@@ -28,6 +29,8 @@ typedef struct GRAPHEDGE
     edgeID nextEdge;
     unsigned char state;
     int weight;
+    float colValue;
+    float hue;
 }GraphEdge;
 
 typedef struct GRAPH
@@ -49,13 +52,13 @@ nodeID PlaceNewNode(Graph *graph, Vector2 pos);
 
 int CreateNode(Graph *graph, nodeID id);
 
-void DeleteNode(Graph* graph, nodeID node);
+int DeleteNode(Graph* graph, nodeID node);
 
-void CreateNodeConnection(Graph *graph, nodeID node1, nodeID node2);
+int CreateNodeConnection(Graph *graph, nodeID node1, nodeID node2);
 
 void AddWeight(Graph *graph, nodeID node1, nodeID node2, int weight);
 
-void DisconnectNodes(Graph *graph, nodeID node1, nodeID node2);
+int DisconnectNodes(Graph *graph, nodeID node1, nodeID node2);
 
 nodeID FindNodeByPosition(Graph *graph, Vector2 point, float radius);
 

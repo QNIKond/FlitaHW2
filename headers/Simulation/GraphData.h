@@ -23,6 +23,8 @@ typedef struct GRAPHCONFIG{
     int useQTOptimization;
     int showDots;
     int showEdgeWeights;
+
+    int components;
 }GraphConfig;
 
 void InitializeGraphConfig(GraphConfig *gc);

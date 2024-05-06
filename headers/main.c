@@ -52,15 +52,21 @@ int main()
 }
 
 int focus = 1;
+unsigned int k1 = 1;
+unsigned int k2 = 1;
 void UpdateDrawFrame(void)
 {
     BeginDrawing();
     ClearBackground(DARKGRAY);
-    SolveGraph(curGraph, &gc);
+    if(gc.isRunning)
+        for(int i = 0; i <gc.perCycleIterations; ++i)
+            SolveGraph(curGraph, &gc);
     UpdateDrawGraphWindow(curGraph,&gc, &focus);
     UpdateDrawInfoWindow(&focus,curGraph, &gc);
     focus = 1;
     UpdateDrawToolBar(&focus,&graph,&gc,&curGraph);
     CheckKeyBinds(&gc);
+   /* DrawCircle(100,100,40, ColorFromHSV(50,1,(k1)));
+    DrawCircle(100,100,20, ColorFromHSV(0,1,(k2)));*/
     EndDrawing();
 }
